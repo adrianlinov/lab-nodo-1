@@ -11,13 +11,12 @@ class LoraManager:
     def __init__(self):
         self.lora = LoRa()
         self.lora.set_callback(self.receive_callback)
-        # self.lora.wait_msg()
     def verify_payload(self, payload):
         validate = payload.split("}-")
         validate[0] = str(validate[0]) + "}"
-        print(sum(bytearray(validate[0], encoding='utf8')), " - ",
+        print(sum(bytearray(validate[0],'utf8')), " - ",
               int(validate[1]))
-        if sum(bytearray(validate[0], encoding='utf8')) == int(validate[1]):
+        if sum(bytearray(validate[0],'utf8')) == int(validate[1]):
             return True
         else:
             return False
@@ -27,6 +26,9 @@ class LoraManager:
                 self.lora.receive_msg()
     def wait_for_message(self):
         self.lora.wait_msg()
+
+
+
     def receive_callback(self, payload):
         print("payload recived")
         print(payload)
@@ -37,6 +39,7 @@ class LoraManager:
                     print("success")
                     response_payload = payload.response().to_json_with_checksum()
                     payloads_waiting_for_sending.append(response_payload)
+                    self.send_message(response_payload)
                     # Send status_payload
                 else:
                     print("error")
@@ -61,9 +64,10 @@ def main():
     print("starting")
     lora = LoraManager()
     print("starting thread")
-    _thread.start_new_thread(lora.listen_for_messages, ())
+    _thread.start_new_thread(lora.wait_for_message, ())
     while True:
-        pass
+        print(" ")
+        time.sleep(5)
     # lora.wait_msg()
     # Colocar todo en modo seguro
     # Entablar comunicaci�n con el gateway hasta obtener respuesta
