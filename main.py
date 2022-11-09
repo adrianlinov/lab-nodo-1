@@ -49,7 +49,7 @@ class LoRaTransceiver:
         while True:
             if PayloadManager.payload_in_queue_to_send() > 0:
                 payload = PayloadManager.get_payload_to_send()
-                send_message(payload.to_json_with_checksum())
+                self.send_message(payload.to_json_with_checksum())
             # get number of threads
 
 def main():

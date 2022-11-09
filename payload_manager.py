@@ -125,7 +125,7 @@ def no_ack1_received_loop():
             try:
                 sleep(5)
                 payload = payload_waiting_ack1.pop(0)
-                payload_to_send(payload)
+                payload_to_send.append(payload)
                 payload_waiting_ack1.append(payload)
             except:
                 continue
@@ -136,7 +136,7 @@ def send_ack1_loop():
             try:
                 sleep(5)
                 payload = payload_sending_ack1.pop(0)
-                payload_to_send(payload.generate_ack1())
+                payload_to_send.append(payload.generate_ack1())
                 payload_sending_ack1.append(payload)
             except:
                 continue
