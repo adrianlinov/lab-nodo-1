@@ -48,6 +48,7 @@ def add_payload_to_sending_queue(payload):
 
 def get_payload_to_send():
     """Obtiene el primer payload de la cola de envio"""
+    # PUEDE HABER UN ERROR AQUI AL HACER POP SI NO HAY ELEMENTOS EN LA LISTA
     return payload_to_send.pop(0)
 
 # ===================== Processing Methods =====================
@@ -70,7 +71,6 @@ def process_read_all(payload):
     pass
 
 def process_ack_1(payload):
-    print("ack_1 received: " + str(payload.data["ack_1"]))
     # find in packets waiting ACK
     payload_command = next((x for x in payload_sending_ack1 if x.p_id == payload.data["ack_1"]), None)
     if payload_command != None:
@@ -108,7 +108,8 @@ def receiver_loop():
         # En caso de payloads recibidos se procesan
         if payload_in_queue_received():
             payload = payload_received.pop(0)
-            print("Payload Received: " + str(payload.p_id))
+            print("Payload Received: ")
+            print(payload.to_dic())
             if payload.action == ("set_state" or "read" or "read_all"):
                 register_process(payload)
 
@@ -136,9 +137,12 @@ def send_ack1_loop():
             try:
                 sleep(5)
                 payload = payload_sending_ack1.pop(0)
+                print("ACK1 Added to payload_to_send")
                 payload_to_send.append(payload.generate_ack1())
+                print(payload.to_dic())
                 payload_sending_ack1.append(payload)
-            except:
+            except Exception as e:
+                print(e)
                 continue
 
 

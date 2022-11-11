@@ -16,7 +16,7 @@ class Payload:
             self.data = payload_as_json["data"]
             self.number_of_ack1_send = 0
         else:
-            self.sender = "nodo_1"
+            self.sender = "nodo_a"
             self.p_id = str(uuid.uuid4())[:8]
             self.data = {}
         print("init finished")
