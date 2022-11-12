@@ -32,6 +32,7 @@ class LoRaTransceiver:
         self.lora.wait_msg()
 
     def receive_callback(self, payload_str):
+        print(payload_str)
         if self.verify_payload(payload_str) == True:
             payload = Payload(payload_str)
             PayloadManager.process_payload(payload)
@@ -57,6 +58,18 @@ class LoRaTransceiver:
                     print("========================================")
                     print(e)
 
+
+    def tx_loop_dummy(self):
+        while True:
+            available_to_rx = True
+            payload = Payload()
+            payload.data["test"] = "test"
+            payload.receiver = "gateway"
+            payload.action = "res_read"
+            print("========== PAYLOAD SENT ============")
+            self.send_message(payload.to_json_with_checksum())
+            time.sleep(3)
+
             # get number of threads
 
 def main():
@@ -64,7 +77,7 @@ def main():
     lora = LoRaTransceiver()
     print("starting thread")
     _thread.start_new_thread(lora.wait_for_message, ())
-    _thread.start_new_thread(lora.tx_loop, ())
+    _thread.start_new_thread(lora.tx_loop_dummy, ())
     PayloadManager.start()
     while True:
         time.sleep(.2)
