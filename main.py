@@ -9,7 +9,9 @@ import payload_manager as PayloadManager
 payloads_received_waiting_for_processing = []
 payloads_waiting_for_sending = []
 
-available_to_rx = True
+
+available_to_rx = False
+
 
 class LoRaTransceiver:
     def __init__(self):
@@ -26,15 +28,21 @@ class LoRaTransceiver:
 
 
     def wait_for_message(self):
-        # while True:
-        #     if available_to_rx:
-        #         self.lora.receive_msg()
-        self.lora.wait_msg()
+        while True:
+            if available_to_rx:
+                # print("Reading...")
+                self.lora.receive_msg()
+            
+        # self.lora.wait_msg()
 
     def receive_callback(self, payload_str):
+        print("Payload Received")
+        print(payload_str)
         if self.verify_payload(payload_str) == True:
-            payload = Payload(payload_str)
-            PayloadManager.process_payload(payload)
+            # print(payload_str)
+            pass
+            # payload = Payload(payload_str)
+            # PayloadManager.process_payload(payload)
 
     def process_payload(self, payload):
         pass
@@ -43,16 +51,15 @@ class LoRaTransceiver:
         self.lora.send(msg)
 
     def tx_loop(self):
+        global available_to_rx
         while True:
             available_to_rx = True
             if PayloadManager.payload_in_queue_to_send():
                 try:
                     available_to_rx = False
-                    time.sleep(0.5)
                     payload = PayloadManager.get_payload_to_send()
-                    print("========== PAYLOAD SENT ============")
-                    print(payload.to_dic())
                     self.send_message(payload.to_json_with_checksum())
+                    # print("========== PAYLOAD SENT ============")
                 except Exception as e:
                     print("========================================")
                     print(e)
@@ -66,8 +73,10 @@ def main():
     _thread.start_new_thread(lora.wait_for_message, ())
     _thread.start_new_thread(lora.tx_loop, ())
     PayloadManager.start()
+    # lora.wait_for_message()
     while True:
-        time.sleep(.2)
+        time.sleep(.5)
+        print(" ")
 
 if __name__ == '__main__':
     try:

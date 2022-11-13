@@ -49,7 +49,10 @@ def add_payload_to_sending_queue(payload):
 def get_payload_to_send():
     """Obtiene el primer payload de la cola de envio"""
     # PUEDE HABER UN ERROR AQUI AL HACER POP SI NO HAY ELEMENTOS EN LA LISTA
-    return payload_to_send.pop(0)
+    if len(payload_to_send) > 0:
+        return payload_to_send.pop(0)
+    else:
+        return None
 
 # ===================== Processing Methods =====================
 
@@ -72,14 +75,14 @@ def process_read_all(payload):
 
 def process_ack_1(payload):
     # find in packets waiting ACK
-    payload_command = next((x for x in payload_sending_ack1 if x.p_id == payload.data["ack_1"]), None)
+    payload_command = next((x for x in payload_sending_ack1 if x.p_id == payload.data["ack_1"]))
     if payload_command != None:
         ack2_payload = Payload()
         ack2_payload.action = "ack_2"
-    ack2_payload.data["ack_2"] = payload.data["ack_1"]
-    ack2_payload.receiver = payload.sender
-    payload_command.number_of_ack1_received = payload_command.number_of_ack1_received + 1
-    payload_to_send.append(ack2_payload)
+        ack2_payload.data["ack_2"] = payload.data["ack_1"]
+        ack2_payload.receiver = payload.sender
+        payload_command.number_of_ack1_received = payload_command.number_of_ack1_received + 1
+        payload_to_send.append(ack2_payload)
 
 def dummmy_action():
     payload = Payload()
@@ -91,14 +94,16 @@ def dummmy_action():
 
 
 def receive_ack1(ack1_payload):
-    payload = next((x for x in payload_waiting_ack1 if x.p_id == ack1_payload.data["ack_1"]), None)
+    payload = next((x for x in payload_waiting_ack1 if x.p_id == ack1_payload.data["ack_1"]))
     payload_waiting_ack1.remove(payload)
 
 
 def receive_ack2(ack2_payload):
-    payload = next((x for x in payload_sending_ack1 if x.p_id == ack2_payload.data["ack_2"]), None)
-    payload_sending_ack1.remove(payload)
-    payload_to_process.append(payload)
+    print("Received ACK2 for:" + ack2_payload.data["ack_2"])
+    payload = next((x for x in payload_sending_ack1 if x.p_id == ack2_payload.data["ack_2"]))
+    if payload != None:
+        payload_sending_ack1.remove(payload)
+        payload_to_process.append(payload)
 #     
 # ======================= Loops ======================    
 
@@ -108,9 +113,9 @@ def receiver_loop():
         # En caso de payloads recibidos se procesan
         if payload_in_queue_received():
             payload = payload_received.pop(0)
-            print("Payload Received: ")
-            print(payload.to_dic())
+            # print(payload.to_dic())
             if payload.action == ("set_state" or "read" or "read_all"):
+                print("Payload Received: " + payload.p_id)
                 register_process(payload)
 
             if payload.action == "ack_1":
@@ -135,11 +140,10 @@ def send_ack1_loop():
     while True:
         if (payload_in_queue_to_send_ack1()):
             try:
-                sleep(5)
+                sleep(2)
                 payload = payload_sending_ack1.pop(0)
-                print("ACK1 Added to payload_to_send")
+                print("Sending ACK1: " + payload.p_id)
                 payload_to_send.append(payload.generate_ack1())
-                print(payload.to_dic())
                 payload_sending_ack1.append(payload)
             except Exception as e:
                 print(e)
