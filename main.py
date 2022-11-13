@@ -30,22 +30,13 @@ class LoRaTransceiver:
     def wait_for_message(self):
         while True:
             if available_to_rx:
-                # print("Reading...")
                 self.lora.receive_msg()
             
-        # self.lora.wait_msg()
 
     def receive_callback(self, payload_str):
-        print("Payload Received")
-        print(payload_str)
         if self.verify_payload(payload_str) == True:
-            # print(payload_str)
-            pass
-            # payload = Payload(payload_str)
-            # PayloadManager.process_payload(payload)
-
-    def process_payload(self, payload):
-        pass
+            payload = Payload(payload_str)
+            PayloadManager.process_payload(payload)
 
     def send_message(self, msg):
         self.lora.send(msg)
@@ -59,21 +50,17 @@ class LoRaTransceiver:
                     available_to_rx = False
                     payload = PayloadManager.get_payload_to_send()
                     self.send_message(payload.to_json_with_checksum())
-                    # print("========== PAYLOAD SENT ============")
                 except Exception as e:
-                    print("========================================")
                     print(e)
 
-            # get number of threads
 
 def main():
     print("starting")
     lora = LoRaTransceiver()
-    print("starting thread")
+    print("starting threads")
     _thread.start_new_thread(lora.wait_for_message, ())
     _thread.start_new_thread(lora.tx_loop, ())
     PayloadManager.start()
-    # lora.wait_for_message()
     while True:
         time.sleep(.5)
         print(" ")
