@@ -6,12 +6,8 @@ import _thread
 from payload import Payload
 import payload_manager as PayloadManager
 
-payloads_received_waiting_for_processing = []
-payloads_waiting_for_sending = []
-
 
 available_to_rx = False
-
 
 class LoRaTransceiver:
     def __init__(self):
@@ -34,9 +30,13 @@ class LoRaTransceiver:
             
 
     def receive_callback(self, payload_str):
+        # print(payload_str)
         if self.verify_payload(payload_str) == True:
             payload = Payload(payload_str)
+            # print("Payload Received: " + payload.p_id)
             PayloadManager.process_payload(payload)
+        else:
+            print("Payload Received: N/A")
 
     def send_message(self, msg):
         self.lora.send(msg)
