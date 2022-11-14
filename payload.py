@@ -51,5 +51,4 @@ class Payload:
     def to_json(self):
         return json.dumps(self.to_dic())
     def to_json_with_checksum(self):
-
         return self.to_json() + "-" + str(sum(bytearray(self.to_json(),'utf8')))
