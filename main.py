@@ -59,7 +59,7 @@ def main():
     lora = LoRaTransceiver()
     print("starting threads")
     _thread.start_new_thread(lora.wait_for_message, ())
-    _thread.start_new_thread(lora.tx_loop_dummy, ())
+    _thread.start_new_thread(lora.tx_loop, ())
     PayloadManager.start()
     while True:
         time.sleep(.5)
