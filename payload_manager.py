@@ -1,9 +1,10 @@
 
 
 from payload import Payload
-from time import sleep
+import time
 import _thread
 import payload_processor as PayloadProcessor
+import constants
 
 
 payload_to_send = []
@@ -12,13 +13,42 @@ payload_received = []
 payload_sending_ack1 = []
 payload_to_process = []
 
+last_received_time = None
+registered_by_gateway = False
+
 def start():
     _thread.start_new_thread(receiver_loop, ())
     _thread.start_new_thread(send_ack1_loop, ())
     _thread.start_new_thread(processing_loop, ())
     _thread.start_new_thread(no_ack1_received_loop, ())
-    _thread.start_new_thread(print_arrays, ())
+    _thread.start_new_thread(dummy_sender_loop, ())
     PayloadProcessor.start()
+    register_in_network()
+
+
+def register_in_network():
+    global registered_by_gateway
+    registered_by_gateway = False
+    payload = Payload()
+    payload.receiver = "gw"
+    payload.action = "register"
+    payload.data["n_n"] = constants.NODE_NAME
+    constants.reset_id()
+    payload.data["n_id"] = constants.NODE_ID
+    payload.data["s"] = [
+        "TEMP_1",
+        "TEMP_2",
+        "TEMP_3"
+    ]
+    payload.data["a"] = [
+        "PUMP_1",
+        "PUMP_2",
+        "PUMP_3",
+    ]
+    
+
+    add_payload_to_sending_queue(payload)
+
 
 def process_payload(payload):
     """
@@ -103,24 +133,9 @@ def register_process(payload):
     """
     Al recibir un paquete que no es un ACK, se debe registrar el proceso para iniciar el proceso de ACK
     """
+    # AQUI DEBE IR VERIFICACION DE QUE EL NODO ESTA REGISTRADO
     payload_sending_ack1.append(payload)
     
-# def process_ack_1(payload):
-#     """
-#     Procesa el ACK1 recibido de un paquete emitido
-#     """
-#     payload_command = None
-#     for x in payload_sending_ack1:
-#         if x.p_id == payload.data["ack_1"]:
-#             payload_command = x
-#             break
-#     if payload_command != None:
-#         ack2_payload = Payload()
-#         ack2_payload.action = "ack_2"
-#         ack2_payload.data["ack_2"] = payload.data["ack_1"]
-#         ack2_payload.receiver = payload.sender
-#         payload_command.number_of_ack1_received = payload_command.number_of_ack1_received + 1
-#         payload_to_send.append(ack2_payload)
 
 
 def receive_ack1(ack1_payload):
@@ -131,6 +146,7 @@ def receive_ack1(ack1_payload):
             break
     if payload != None:
         payload_waiting_ack1.remove(payload)
+        payload_to_send.append(payload.generate_ack2())
 
 
 def receive_ack2(ack2_payload):
@@ -152,9 +168,11 @@ def receiver_loop():
     while True:
         # En caso de payloads recibidos se procesan
         if payload_in_queue_received():
+            global last_received_time
+            last_received_time = time.time()
             payload = get_payload_received()
             if payload != None:
-                if payload.action == ("set_state" or "read" or "read_all"):
+                if payload.action == ("set_state" or "read" or "read_all") and registered_by_gateway:
                     register_process(payload)
 
                 elif payload.action == "ack_1":
@@ -171,7 +189,7 @@ def no_ack1_received_loop():
     while True:
         if (payload_waiting_ack1_in_queue()):
             try:
-                sleep(5)
+                time.sleep(5)
                 payload = payload_waiting_ack1.pop(0)
                 payload_to_send.append(payload)
                 payload_waiting_ack1.append(payload)
@@ -183,7 +201,7 @@ def send_ack1_loop():
     Envia los ACK1
     """
     while True:
-        sleep(2)
+        time.sleep(2)
         if (payload_in_queue_to_send_ack1()):
             try:
                 payload = get_payload_sending_ack1()
@@ -201,12 +219,28 @@ def processing_loop():
     """
     while True:
         if (payload_in_queue_to_process()):
-            PayloadProcessor.process_payload(payload_to_process.pop(0))
+            payload = payload_to_process.pop(0)
+            if payload.action == "register":
+                global registered_by_gateway
+                registered_by_gateway = True
+            if payload.action != "register" and registered_by_gateway:    
+                PayloadProcessor.process_payload(payload)
 
 
 def transmitter_loop():
     while True:
-        sleep(5)
+        time.sleep(5)
+
+def dummy_sender_loop():
+    while True:
+        if registered_by_gateway:
+            time.sleep(5)
+            payload = Payload()
+            payload.action = "important"
+            payload.data["led"] = "ON"
+            payload.receiver = "gw"
+            payload_to_send.append(payload)
+
 
 def print_arrays():
     '''
@@ -220,4 +254,4 @@ def print_arrays():
         print("payload_sending_ack1: " + str(len(payload_sending_ack1)))
         print("payload_received: " + str(len(payload_received)))
         print("=================================")
-        sleep(1)
+        time.sleep(1)

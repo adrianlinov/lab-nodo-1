@@ -1,5 +1,7 @@
 import json
 import uuid
+import constants
+
 class Payload:
     # JSON as string to be parsed
     def __init__(self, payload=None):
@@ -10,26 +12,24 @@ class Payload:
             payload_as_json = json.loads(self.str_payload_without_checksum)
             # Payload content deserialized
             self.p_id = payload_as_json["p_id"]
-            self.sender = payload_as_json["sender"]
-            self.receiver = payload_as_json["receiver"]
-            self.action = payload_as_json["action"]
-            self.data = payload_as_json["data"]
+            self.sender = payload_as_json["s"]
+            self.receiver = payload_as_json["r"]
+            self.action = payload_as_json["a"]
+            self.data = payload_as_json["d"]
             self.number_of_ack1_send = 0
         else:
-            self.sender = "nodo_a"
+            self.sender = constants.NODE_ID
             self.p_id = str(uuid.uuid4())[:8]
             self.data = {}
         print("init finished")
-    def run(self):
-        # do stuff
-        return "success"
+
     def to_dic(self):
         return {
-            "sender": self.sender,
-            "receiver": self.receiver,
-            "action": self.action,
-            "timestamp": "timestamp",
-            "data": self.data,
+            "s": self.sender,
+            "r": self.receiver,
+            "a": self.action,
+            "ts": "ts",
+            "d": self.data,
             "p_id": self.p_id
         }
 
@@ -41,6 +41,14 @@ class Payload:
         response_payload.data["ack_1"] = self.p_id
         return response_payload
 
+    def generate_ack2(self):
+        response_payload = Payload()
+        response_payload.receiver = self.sender
+        response_payload.action = "ack_2"
+        response_payload.data["ack_2"] = self.p_id
+        return response_payload
+
+
     def response(self):
         response_payload = Payload()
         response_payload.receiver = self.sender
@@ -50,5 +58,6 @@ class Payload:
 
     def to_json(self):
         return json.dumps(self.to_dic())
+        
     def to_json_with_checksum(self):
         return self.to_json() + "-" + str(sum(bytearray(self.to_json(),'utf8')))
