@@ -1,3 +1,4 @@
+# !!! ESTE ARCHIVO CAMBIA CON CADA NODO !!!
 import uuid
 
 NODE_NAME = "n_a"

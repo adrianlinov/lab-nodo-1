@@ -1,6 +1,7 @@
 import time
 import _thread
 import payload_manager as PayloadManager
+from payload import Payload
 
 
 def start():
@@ -12,8 +13,37 @@ def process_payload(payload):
     """
     Ejecuta el procesamiento de un payload recibido
     """
-    time.sleep(5)
-    return True
+    if payload.action == "read":
+        return _process_read(payload)
+            
+    if payload.action == "read_all":
+        print("read_all")
+        # Enviar los datos solicitados
+
+def _process_read(payload):
+    response_payload = Payload()
+    response_payload.action = "read_res"
+    response_payload.receiver = payload.sender
+
+    if "s" in payload.data.keys():
+        if payload.data["s"] != None and len(payload.data["s"]) > 0:
+                for sensor_id in payload.data["s"]:
+                    response_payload.data[sensor_id] = "19"
+                    # Identificar el sensor
+                    # Leer el valor del sensor
+                    # Colocar el dato del sensor en un payload
+                    # Enviar el payload al Gateway
+                    # pass
+    if "a" in payload.data.keys():
+        if payload.data["a"] != None and len(payload.data["a"]) > 0:
+            for actuator_id in payload.data["a"]:
+                response_payload.data[actuator_id] = "ON"
+                # Identificar el sensor
+                # Leer el valor del sensor
+                # Colocar el dato del sensor en un payload
+                # Enviar el payload al Gateway
+                # pass
+    return response_payload
 
 
 # def local_security_loop():

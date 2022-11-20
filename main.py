@@ -18,12 +18,8 @@ class LoRaTransceiver:
     def verify_payload(self, payload):
         validate = payload.split("}-")
         validate[0] = str(validate[0]) + "}"
-        print(sum(bytearray(validate[0],'utf8')))
-        print(int(validate[1]))
         if sum(bytearray(validate[0],'utf8')) == int(validate[1]):
             payload_obj = Payload(payload)
-            print(payload_obj.receiver)
-            print(constant.NODE_ID)
             if payload_obj.receiver == constant.NODE_ID:
                 return True
             else: 
@@ -39,14 +35,15 @@ class LoRaTransceiver:
             
 
     def receive_callback(self, payload_str):
-        print("Payload Received: " + payload_str)
+        
         if self.verify_payload(payload_str) == True:
             payload = Payload(payload_str)
             # print("Payload Received: " + payload.p_id)
-            PayloadManager.process_payload(payload)
-        else:
-            print("Payload Received: N/A")
-            print(payload_str)
+            payload.print()
+            PayloadManager.payload_received(payload)
+        # else:
+            # print("Payload Received: N/A")
+            # print(payload_str)
 
     def send_message(self, msg):
         self.lora.send(msg)
@@ -59,7 +56,8 @@ class LoRaTransceiver:
                 try:
                     available_to_rx = False
                     payload = PayloadManager.get_payload_to_send()
-                    print("Payload Send: " + payload.to_json_with_checksum())
+                    # print("Payload Send: " + payload.to_json_with_checksum())
+                    payload.print()
                     self.send_message(payload.to_json_with_checksum())
                 except Exception as e:
                     print(e)

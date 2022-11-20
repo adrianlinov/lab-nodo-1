@@ -21,7 +21,6 @@ class Payload:
             self.sender = constants.NODE_ID
             self.p_id = str(uuid.uuid4())[:8]
             self.data = {}
-        print("init finished")
 
     def to_dic(self):
         return {
@@ -43,17 +42,9 @@ class Payload:
 
     def generate_ack2(self):
         response_payload = Payload()
-        response_payload.receiver = self.sender
+        response_payload.receiver = self.receiver
         response_payload.action = "ack_2"
         response_payload.data["ack_2"] = self.p_id
-        return response_payload
-
-
-    def response(self):
-        response_payload = Payload()
-        response_payload.receiver = self.sender
-        response_payload.action = "ack_1"
-        response_payload.data["ack_1"] = self.p_id
         return response_payload
 
     def to_json(self):
@@ -61,3 +52,13 @@ class Payload:
         
     def to_json_with_checksum(self):
         return self.to_json() + "-" + str(sum(bytearray(self.to_json(),'utf8')))
+
+    def print(self):
+        if self.action == "ack_1":
+            print(f"{self.sender} -> {self.receiver}: ID: {self.p_id} ACTION: {self.action} OF: {self.data['ack_1']}")
+
+        if self.action == "ack_2":
+            print(f"{self.sender} -> {self.receiver}: ID: {self.p_id} ACTION: {self.action} OF: {self.data['ack_2']}")
+        
+        else:
+            print(f"{self.sender} -> {self.receiver}: ID: {self.p_id} ACTION: {self.action}")
