@@ -16,8 +16,13 @@ class Payload:
             self.receiver = payload_as_json["r"]
             self.action = payload_as_json["a"]
             self.data = payload_as_json["d"]
-            self.number_of_ack1_send = 0
+            self.tx_ack1_count = 0
+            self.tx_last_ack1_time = None
+            self.rx_ack1_count = 0
         else:
+            self.tx_ack1_count = 0
+            self.rx_ack1_count = 0
+            self.tx_last_ack1_time = None
             self.sender = constants.NODE_ID
             self.p_id = str(uuid.uuid4())[:8]
             self.data = {}
@@ -33,7 +38,7 @@ class Payload:
         }
 
     def generate_ack1(self):
-        self.number_of_ack1_send = self.number_of_ack1_send + 1
+        self.rx_ack1_count = self.rx_ack1_count + 1
         response_payload = Payload()
         response_payload.receiver = self.sender
         response_payload.action = "ack_1"

@@ -1,6 +1,6 @@
 import time
 import _thread
-import payload_manager as PayloadManager
+import payload_manager_v2 as PayloadManager
 from payload import Payload
 
 

@@ -5,6 +5,7 @@ import time
 import _thread
 import payload_processor as PayloadProcessor
 import constants
+import random
 
 
 payload_to_send = []
@@ -13,7 +14,7 @@ payload_received_from_ext = []
 payload_sending_ack1 = []
 payload_to_process = []
 
-last_received_time = None
+last_received_time = time.time()
 registered_by_gateway = False
 
 def start():
@@ -33,7 +34,6 @@ def register_in_network():
     payload.receiver = "gw"
     payload.action = "register"
     payload.data["n_n"] = constants.NODE_NAME
-    constants.reset_id()
     payload.data["n_id"] = constants.NODE_ID
     payload.data["s"] = [
         "TEMP_1",
@@ -149,6 +149,12 @@ def receive_ack1(ack1_payload):
         payload_to_send.append(payload.generate_ack2())
         # AQUI DEBE IR APPEND A LA DE PROCESAMIENTO
         payload_to_process.append(payload)
+    else:
+        ack_2 = Payload()
+        ack_2.receiver = ack1_payload.sender
+        ack_2.action = "ack_2"
+        ack_2.data["ack_2"] = ack1_payload.data["ack_1"]
+        payload_to_send.append(ack_2)
 
 
 def receive_ack2(ack2_payload):
@@ -175,7 +181,6 @@ def receiver_loop():
             payload = get_payload_received_from_ext()
             if payload != None:
                 if payload.action in ["set_state","read","read_all"] and registered_by_gateway:
-                    # print("Payload Action Received: " + payload.to_json_with_checksum())
                     register_process(payload)
 
                 elif payload.action == "ack_1":
@@ -192,7 +197,7 @@ def no_ack1_received_loop():
     while True:
         if (payload_waiting_ack1_in_queue()):
             try:
-                time.sleep(5)
+                time.sleep(random.randint(1, 5))
                 payload = payload_waiting_ack1.pop(0)
                 payload_to_send.append(payload)
                 payload_waiting_ack1.append(payload)
@@ -204,12 +209,28 @@ def send_ack1_loop():
     Envia los ACK1
     """
     while True:
-        time.sleep(2)
+        time.sleep(1)
         if (payload_in_queue_to_send_ack1()):
             try:
                 payload = get_payload_sending_ack1()
                 payload_to_send.append(payload.generate_ack1())
                 payload_sending_ack1.append(payload)
+                # if payload.action != "ping" and payload.number_of_ack1_send >= 10:
+                #     # Colocar dispositivo en modo seguro
+                #     pass
+                    
+                if payload.number_of_ack1_send >= 30:
+                    # Colocar dispositivo en modo seguro
+                    # Limpiar colas de todos las listas
+                    payload_to_send.clear()
+                    payload_waiting_ack1.clear()
+                    payload_received_from_ext.clear()
+                    payload_sending_ack1.clear()
+                    payload_to_process.clear()
+                    constants.reset_id()
+                    register_in_network()
+
+
             except Exception as e:
                 print(e)
                 continue
@@ -239,12 +260,26 @@ def transmitter_loop():
 
 def keep_alive_loop():
     while True:
-        if registered_by_gateway:
-            time.sleep(60)
+        ping_in_queue = False
+        for x in payload_to_send:
+            if x.action == "ping":
+                ping_in_queue = True
+        for x in payload_waiting_ack1:
+            if x.action == "ping":
+                ping_in_queue = True
+        for x in payload_to_process:
+            if x.action == "ping":
+                ping_in_queue = True
+        
+
+                
+        if registered_by_gateway and time.time() - last_received_time > 30 and not ping_in_queue:
             payload = Payload()
             payload.action = "ping"
             payload.receiver = "gw"
             payload_to_send.append(payload)
+            time.sleep(random.randint(5, 10))
+            # REGISTRAR EL KEEPALIVE EN UNA VARIABLE
 
 
 def print_arrays():

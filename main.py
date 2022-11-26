@@ -4,7 +4,7 @@ import time
 import json
 import _thread
 from payload import Payload
-import payload_manager as PayloadManager
+import payload_manager_v2 as PayloadManager
 import constants as constant
 
 
@@ -20,6 +20,9 @@ class LoRaTransceiver:
         validate[0] = str(validate[0]) + "}"
         if sum(bytearray(validate[0],'utf8')) == int(validate[1]):
             payload_obj = Payload(payload)
+            print(payload)
+            print(payload_obj.receiver)
+            print(constant.NODE_ID)
             if payload_obj.receiver == constant.NODE_ID:
                 return True
             else: 
@@ -35,7 +38,6 @@ class LoRaTransceiver:
             
 
     def receive_callback(self, payload_str):
-        
         if self.verify_payload(payload_str) == True:
             payload = Payload(payload_str)
             # print("Payload Received: " + payload.p_id)
@@ -46,16 +48,17 @@ class LoRaTransceiver:
             # print(payload_str)
 
     def send_message(self, msg):
+        # TOA = 390ms
         self.lora.send(msg)
 
     def tx_loop(self):
         global available_to_rx
         while True:
             available_to_rx = True
-            if PayloadManager.payload_in_queue_to_send():
+            payload = PayloadManager.get_payload_to_send()
+            if payload != None:
                 try:
                     available_to_rx = False
-                    payload = PayloadManager.get_payload_to_send()
                     # print("Payload Send: " + payload.to_json_with_checksum())
                     payload.print()
                     self.send_message(payload.to_json_with_checksum())
