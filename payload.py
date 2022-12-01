@@ -19,10 +19,14 @@ class Payload:
             self.tx_ack1_count = 0
             self.tx_last_ack1_time = None
             self.rx_ack1_count = 0
+            self.priority = payload_as_json["p"]
+            self.tx_payload_send_count = 0
         else:
+            self.tx_payload_send_count = 0
             self.tx_ack1_count = 0
             self.rx_ack1_count = 0
             self.tx_last_ack1_time = None
+            self.priority = 2
             self.sender = constants.NODE_ID
             self.p_id = str(uuid.uuid4())[:8]
             self.data = {}
@@ -32,6 +36,7 @@ class Payload:
             "s": self.sender,
             "r": self.receiver,
             "a": self.action,
+            "p": self.priority,
             "ts": "ts",
             "d": self.data,
             "p_id": self.p_id
@@ -40,12 +45,18 @@ class Payload:
     def generate_ack1(self):
         self.rx_ack1_count = self.rx_ack1_count + 1
         response_payload = Payload()
+        if self.rx_ack1_count > 3:
+            response_payload.priority = 1
         response_payload.receiver = self.sender
         response_payload.action = "ack_1"
         response_payload.data["ack_1"] = self.p_id
         return response_payload
 
     def generate_ack2(self):
+        response_payload = Payload()
+        self.tx_ack1_count += 1
+        if self.tx_ack1_count > 3:
+            response_payload.priority = 1            
         response_payload = Payload()
         response_payload.receiver = self.receiver
         response_payload.action = "ack_2"

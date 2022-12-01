@@ -2,6 +2,8 @@ import time
 import _thread
 import payload_manager_v2 as PayloadManager
 from payload import Payload
+from components.node import node as Node
+
 
 
 def start():
@@ -15,9 +17,15 @@ def process_payload(payload):
     """
     if payload.action == "read":
         return _process_read(payload)
-            
+
     if payload.action == "read_all":
-        print("read_all")
+        return _process_read_all(payload)
+
+    if payload.action == "set_state":
+        return _process_set_state(payload)
+            
+    if payload.action == "ping":
+        return _process_ping(payload)
         # Enviar los datos solicitados
 
 def _process_read(payload):
@@ -45,6 +53,28 @@ def _process_read(payload):
                 # pass
     return response_payload
 
+def _process_ping(payload):
+    response_payload = Payload()
+    response_payload.action = "ping_res"
+    response_payload.receiver = payload.sender
+    return response_payload
+
+def _process_read_all(payload):
+    response_payload = Payload()
+    response_payload.action = "read_all_res"
+    response_payload.receiver = payload.sender
+    # LA DATA TIENE QUE SER CONSULTADA A LOS SENSORES
+    response_payload.data["s"] = {"sensor_1": "19", "sensor_2": "19"}
+    response_payload.data["a"] = {"actuator_1": "ON", "actuator_2": "OFF"}
+    return response_payload
+
+def _process_set_state(payload):
+    response_payload = Payload()
+    response_payload.action = "set_state_res"
+    response_payload.receiver = payload.sender
+    # LA DATA TIENE QUE SER CONSULTADA A LOS SENSORES
+    response_payload.data["a"] = {"actuator_1": "ON", "actuator_2": "OFF"}
+    return response_payload
 
 # def local_security_loop():
 #     '''

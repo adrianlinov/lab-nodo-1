@@ -7,15 +7,12 @@ import payload_processor as PayloadProcessor
 import constants
 import random
 
-
-
-
 last_received_time = time.time()
 registered_by_gateway = False
 
-tx_waiting_ack1= []
-tx_timeout_ack2= []
-rx_sending_ack1= []
+tx_waiting_ack1 = []
+tx_timeout_ack2 = []
+rx_sending_ack1 = []
 rx_to_process = []
 payload_to_send = []
 
@@ -76,16 +73,19 @@ def payload_received(p_received):
             rx_sending_ack1.append(p_received)
 
 def payload_waiting_ack1_loop():
-    '''Envia los payloads que estan en la lista de espera de ACK1'''
+    '''Envía los payloads que están en la lista de espera de ACK1'''
     while True:
         if len(tx_waiting_ack1) > 0:
             payload = tx_waiting_ack1.pop(0)
+            payload.tx_payload_send_count += 1
+            if payload.tx_payload_send_count > 3:
+                payload.priority = 1
             payload_to_send.append(payload)
             tx_waiting_ack1.append(payload)
             time.sleep(random.randint(1, 5))
 
 def payload_sending_ack1_loop():
-    '''Envia los ACK1 de los payloads recibidos'''
+    '''Envía los ACK1 de los payloads recibidos'''
     while True:
         if len(rx_sending_ack1) > 0:
             payload = rx_sending_ack1.pop(0)
@@ -101,11 +101,12 @@ def on_ack1_received(ack1_payload):
             payload = x
             break
     if payload != None:
-        tx_waiting_ack1.remove(payload)
-        # TODO: SUMAR 1 AL CONTADOR DE ACK2 ENVIADOS y ACTUALIZAR LAST_ACK1_RECEIVED_TIME
-        payload.tx_ack1_count += 1
-        tx_timeout_ack2.append(payload)
-        payload_to_send.append(payload.generate_ack2())
+        if (payload.action == "register" and not registered_by_gateway) or (register_in_network):
+            tx_waiting_ack1.remove(payload)
+            # TODO: SUMAR 1 AL CONTADOR DE ACK2 ENVIADOS y ACTUALIZAR LAST_ACK1_RECEIVED_TIME
+            
+            tx_timeout_ack2.append(payload)
+            payload_to_send.append(payload.generate_ack2())
 
     for x in tx_timeout_ack2:
         if x.p_id == ack1_payload.data["ack_1"]:
@@ -113,15 +114,15 @@ def on_ack1_received(ack1_payload):
             break
     
     if payload != None:
-        tx_timeout_ack2.remove(payload)
-        payload_to_send.append(payload.generate_ack2())
-        payload.tx_ack1_count += 1
-        payload.tx_last_ack1_received_time = time.time()
-        # TODO: SUMAR 1 AL CONTADOR DE ACK2 ENVIADOS y ACTUALIZAR LAST_ACK1_RECEIVED_TIME
-        tx_timeout_ack2.append(payload)
+        if (payload.action == "register" and not registered_by_gateway) or (register_in_network):
+            tx_timeout_ack2.remove(payload)
+            payload_to_send.append(payload.generate_ack2())
+            payload.tx_last_ack1_time = time.time()
+            # TODO: SUMAR 1 AL CONTADOR DE ACK2 ENVIADOS y ACTUALIZAR LAST_ACK1_RECEIVED_TIME
+            tx_timeout_ack2.append(payload)
 
 def rx_to_process_loop():
-    '''Envia los payloads a ser procesados'''
+    '''Envía los payloads a ser procesados'''
     while True:
         if len(rx_to_process) > 0:
             payload = rx_to_process.pop(0)
@@ -147,8 +148,11 @@ def timeout_for_processing():
     '''Verifica si no se recibió un ACK1 por mas de 60 segundos'''
     while True:
         for payload in tx_timeout_ack2:
-            if time.time() - payload.tx_last_ack1_received_time > 60:
+            if time.time() - payload.tx_last_ack1_time > 60:
                 tx_timeout_ack2.remove(payload)
+                if payload.action == "register":
+                    global registered_by_gateway
+                    registered_by_gateway = True
                 # PAYLOAD FUE SATISFACTORIAMENTE ENVIADO
                 # !!! SE ACABA EL PROCESO DE TX !!!
 
@@ -157,6 +161,8 @@ def get_payload_to_send():
     Obtiene el primer payload de la cola de envío
     """
     if len(payload_to_send) > 0:
+        # order payload by priority
+        payload_to_send.sort(key=lambda x: x.priority, reverse=True)
         return payload_to_send.pop(0)
     else:
         return None
