@@ -9,4 +9,4 @@ class Sensor():
 
     def get_id(self):
         '''Devuelve el id del sensor'''
-        return self.id
+        return self.id 
