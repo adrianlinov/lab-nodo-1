@@ -1,15 +1,32 @@
-import machine, onewire, ds18x20, time
+from machine import UART
+import time
 
+# SE REQUIRE USAR UART 2 YA QUE UART 1 TRAE PROBLEMAS DE CONEXION
+# PROBAR SOFTWARE SERIAL
+    
+serial = UART(2, 9600)
+def read():
+    '''Lee el valor del sensor'''
+    serial.read()
+    _awake()
+    serial.write("R\r")
+    response = serial.read().decode("utf-8").split("\r")[0]
+    _sleep()
+    return response
 
-ds_pin = machine.Pin(17)
-ds_sensor = ds18x20.DS18X20(onewire.OneWire(ds_pin))
+def _awake():
+    serial.read()
+    serial.write("K\r")
+    return serial.read().decode("utf-8").split("\r")[0]
 
-roms = ds_sensor.scan()
-print('Found DS devices: ', roms)
+def _sleep():
+    serial.read()
+    serial.write("SLEEP\r")
+    return serial.read().decode("utf-8").split("\r")[0]
+
 
 while True:
-    ds_sensor.convert_temp()
-    time.sleep_ms(750)
-    for rom in roms:
-        print(ds_sensor.read_temp(rom))
-    time.sleep(5)
+    # print(read())
+    _awake()
+    print(".")
+    time.sleep(1)
