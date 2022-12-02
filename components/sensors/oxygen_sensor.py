@@ -14,7 +14,7 @@ def read(self):
     self.serial.read()
     _awake()
     self.serial.write("R\r")
-    time.sleep(0.5)
+    time.sleep(1)
     response = self.serial.read().decode("utf-8").split("\r")[0]
     _sleep()
     return response
