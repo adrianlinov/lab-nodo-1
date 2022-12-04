@@ -2,7 +2,7 @@ from components.actuator import Actuator
 from machine import Pin
 
 
-class PumpActuator(Actuator):
+class RelayActuator(Actuator):
     
     def __init__(self, id, pin):
         super().__init__(id)

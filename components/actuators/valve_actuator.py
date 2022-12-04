@@ -1,13 +1,21 @@
 from components.actuator import Actuator
+from machine import Pin
 
 
 class ValveActuator(Actuator):
     
-    def __init__(self, id):
+    def __init__(self, id, pin):
         super().__init__(id)
-        
-    def set_state(newState):
-        pass
+        self.pin = Pin(pin, Pin.OUT)
+        self.pin.value(1)
 
-    def get_state():
-        pass
+    def set_state(self, newState, timeout = None):
+        if newState == True or newState == "ON" or newState == "on" or newState == "1" or newState == 1:
+                return self.pin.value(1)
+        elif newState == False or newState == "OFF" or newState == "off" or newState == "0" or newState == 0:
+            return self.pin.value(0)
+        else:
+            raise ValueError("Invalid state")
+
+    def get_state(self):
+        return self.pin.value()

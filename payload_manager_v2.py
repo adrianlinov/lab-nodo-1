@@ -6,6 +6,7 @@ import _thread
 import payload_processor as PayloadProcessor
 import constants
 import random
+import components.node as Node
 
 last_received_time = time.time()
 registered_by_gateway = False
@@ -36,16 +37,18 @@ def register_in_network():
     payload.action = "register"
     payload.data["n_n"] = constants.NODE_NAME
     payload.data["n_id"] = constants.NODE_ID
-    payload.data["s"] = [
-        "TEMP_1",
-        "TEMP_2",
-        "TEMP_3"
-    ]
-    payload.data["a"] = [
-        "PUMP_1",
-        "PUMP_2",
-        "PUMP_3",
-    ]
+    Node.init()
+
+    payload.data["s"] = []
+    sensors = Node.get_sensor_list()
+    for sensor in sensors:
+        payload.data["s"].append(sensor.get_id())
+
+    payload.data["a"] = []
+    actuators = Node.get_actuator_list()
+    for actuator in actuators:
+        payload.data["a"].append(actuator.get_id())
+
     tx_waiting_ack1.append(payload)
 
 def payload_received(p_received):

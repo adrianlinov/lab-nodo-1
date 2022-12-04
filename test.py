@@ -1,32 +1,16 @@
-from machine import UART
+from machine import UART, Pin
 import time
 
 # SE REQUIRE USAR UART 2 YA QUE UART 1 TRAE PROBLEMAS DE CONEXION
 # PROBAR SOFTWARE SERIAL
     
-serial = UART(2, 9600)
-def read():
-    '''Lee el valor del sensor'''
-    serial.read()
-    _awake()
-    serial.write("R\r")
-    response = serial.read().decode("utf-8").split("\r")[0]
-    _sleep()
-    return response
 
-def _awake():
-    serial.read()
-    serial.write("K\r")
-    return serial.read().decode("utf-8").split("\r")[0]
-
-def _sleep():
-    serial.read()
-    serial.write("SLEEP\r")
-    return serial.read().decode("utf-8").split("\r")[0]
-
+pin = Pin(13, Pin.OUT)
+print(pin.value())
 
 while True:
-    # print(read())
-    _awake()
-    print(".")
+    time.sleep(1)
+    pin.value(1)
+    time.sleep(1)
+    pin.value(0)
     time.sleep(1)

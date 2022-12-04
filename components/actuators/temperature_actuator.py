@@ -2,8 +2,8 @@ from components.actuator import Actuator
 from machine import Pin
 
 
-class PumpActuator(Actuator):
-    
+class TemperatureActuator(Actuator):
+
     def __init__(self, id, pin):
         super().__init__(id)
         self.pin = Pin(pin, Pin.OUT)

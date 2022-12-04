@@ -2,7 +2,7 @@ import time
 import _thread
 import payload_manager_v2 as PayloadManager
 from payload import Payload
-from components.node import node as Node
+import components.node as Node
 
 
 
@@ -32,25 +32,22 @@ def _process_read(payload):
     response_payload = Payload()
     response_payload.action = "read_res"
     response_payload.receiver = payload.sender
+    response_payload.data["s"] = {}
+    response_payload.data["a"] = {}
 
     if "s" in payload.data.keys():
         if payload.data["s"] != None and len(payload.data["s"]) > 0:
                 for sensor_id in payload.data["s"]:
-                    response_payload.data[sensor_id] = "19"
-                    # Identificar el sensor
-                    # Leer el valor del sensor
-                    # Colocar el dato del sensor en un payload
-                    # Enviar el payload al Gateway
-                    # pass
+                    sensor = Node.get_sensor(sensor_id)
+                    if sensor != None:
+                        response_payload.data["s"][sensor_id] = sensor.read()
+
     if "a" in payload.data.keys():
         if payload.data["a"] != None and len(payload.data["a"]) > 0:
             for actuator_id in payload.data["a"]:
-                response_payload.data[actuator_id] = "ON"
-                # Identificar el sensor
-                # Leer el valor del sensor
-                # Colocar el dato del sensor en un payload
-                # Enviar el payload al Gateway
-                # pass
+                actuator = Node.get_actuator(actuator_id)
+                if actuator != None:
+                    response_payload.data["a"][actuator_id] = actuator.get_state()
     return response_payload
 
 def _process_ping(payload):
@@ -72,8 +69,13 @@ def _process_set_state(payload):
     response_payload = Payload()
     response_payload.action = "set_state_res"
     response_payload.receiver = payload.sender
-    # LA DATA TIENE QUE SER CONSULTADA A LOS SENSORES
-    response_payload.data["a"] = {"actuator_1": "ON", "actuator_2": "OFF"}
+    response_payload.data["a"] = {}
+    if "a" in payload.data.keys():
+        if payload.data["a"] != None and len(payload.data["a"]) > 0:
+            for actuator_id in payload.data["a"].keys():
+                actuator = Node.get_actuator(actuator_id)
+                if actuator != None:
+                    response_payload.data["a"][actuator_id] = actuator.set_state(payload.data["a"][actuator_id])
     return response_payload
 
 # def local_security_loop():
