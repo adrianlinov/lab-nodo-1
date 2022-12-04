@@ -1,5 +1,7 @@
 from components.actuators.relay_actuator import RelayActuator
+from components.actuators.valve_actuator import ValveActuator
 from components.sensors.temperature_sensor import TemperatureSensor
+from components.sensors.water_level_sensor import WaterLevelSensor
 
 
 sensors = []
@@ -11,9 +13,8 @@ def init():
     global actuators
     sensors = []
     actuators = []
-    sensors.append(TemperatureSensor("ts1", 4))
-    sensors.append(TemperatureSensor("ts2", 5))
-    actuators.append(RelayActuator("ra1", 12))
+    sensors.append(WaterLevelSensor("LS1", [36,39,34,35,32]))
+    actuators.append(ValveActuator("EA1", 4))
     
 def get_sensor(sensor_id):
     for sensor in sensors:

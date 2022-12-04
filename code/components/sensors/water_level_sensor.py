@@ -16,20 +16,21 @@ class WaterLevelSensor(Sensor):
             self.levels.append(machine.Pin(pin_number, machine.Pin.IN, machine.Pin.PULL_UP))
 
     def read(self):
-        '''Lee el valor del sensor
-        125 = OVERFLOW
-        100 = 100%
-        75 = 75%
-        50 = 50%
-        25 = 25%
-        0 = LOW LEVEL
         '''
+        Lee el valor del sensor
+        '''
+        # TODO Revisar lectura
         sum = 0
         switch_state_list = list(map(lambda x: x.value(), self.levels))
+        for i in switch_state_list:
+            sum += i
         
-        for switch_state in switch_state_list:
-            sum += int(switch_state)
+        if sum == 0:
+            return "LOW"
+        elif sum == len(switch_state_list):
+            return "OF"
+        else:
+            return round((sum - 1) / (len(switch_state_list) - 1), 2)
         
-        return round(sum * (100 / len(switch_state_list)), 1)
 
         
