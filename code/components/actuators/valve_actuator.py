@@ -14,6 +14,8 @@ class ValveActuator(Actuator):
                 return self.pin.value(1)
         elif newState == False or newState == "OFF" or newState == "off" or newState == "0" or newState == 0:
             return self.pin.value(0)
+        elif newState == None:
+            pass
         else:
             raise ValueError("Invalid state")
 

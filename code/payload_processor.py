@@ -1,14 +1,8 @@
 import time
 import _thread
-import payload_manager_v2 as PayloadManager
+import payload_manager as PayloadManager
 from payload import Payload
 import components.node as Node
-
-
-
-def start():
-    # _thread.start_new_thread(local_security_loop, ())
-    _thread.start_new_thread(local_processing_loop, ())
 
 
 def process_payload(payload):
@@ -37,10 +31,10 @@ def _process_read(payload):
 
     if "s" in payload.data.keys():
         if payload.data["s"] != None and len(payload.data["s"]) > 0:
-                for sensor_id in payload.data["s"]:
-                    sensor = Node.get_sensor(sensor_id)
-                    if sensor != None:
-                        response_payload.data["s"][sensor_id] = sensor.read()
+            for sensor_id in payload.data["s"]:
+                sensor = Node.get_sensor(sensor_id)
+                if sensor != None:
+                    response_payload.data["s"][sensor_id] = sensor.read()
 
     if "a" in payload.data.keys():
         if payload.data["a"] != None and len(payload.data["a"]) > 0:
@@ -58,11 +52,18 @@ def _process_ping(payload):
 
 def _process_read_all(payload):
     response_payload = Payload()
-    response_payload.action = "read_all_res"
+    response_payload.action = "read_res"
     response_payload.receiver = payload.sender
-    # LA DATA TIENE QUE SER CONSULTADA A LOS SENSORES
-    response_payload.data["s"] = {"sensor_1": "19", "sensor_2": "19"}
-    response_payload.data["a"] = {"actuator_1": "ON", "actuator_2": "OFF"}
+    response_payload.data["s"] = {}
+    response_payload.data["a"] = {}
+    Node.get_sensor_list()
+
+    for sensor in Node.get_sensor_list():
+        response_payload.data["s"][sensor.get_id()] = sensor.read()
+    
+    for actuator in Node.get_actuator_list():
+        response_payload.data["a"][actuator.get_id()] = actuator.get_state()
+
     return response_payload
 
 def _process_set_state(payload):
@@ -78,26 +79,3 @@ def _process_set_state(payload):
                     response_payload.data["a"][actuator_id] = actuator.set_state(payload.data["a"][actuator_id])
     return response_payload
 
-# def local_security_loop():
-#     '''
-#     Loop de seguridad local, nada puede activarse si no se cumple con las condiciones de seguridad local
-#     '''
-#     while True:
-#         if PayloadManager.last_received_time + 30 < time.time():
-#             # Si no se ha recibido un payload en 30 segundos, se apagan todos los componentes
-#             pass
-        
-        # Leer estado de componentes de prioridad alta (Sensores de Nivel, Electrovalvulas, etc) [Diferente para cada nodo]
-
-        # Aplicar medidas de seguridad en caso de ser necesario
-
-        # Notificar al Gateway de los cambios de estado
-
-def local_processing_loop():
-    while True:
-        pass
-        # Leer estado de componentes
-
-        # Aplicar medidas de seguridad en caso de ser necesario
-
-        # Notificar al Gateway de los cambios de estado

@@ -4,8 +4,9 @@ import time
 import json
 import _thread
 from payload import Payload
-import payload_manager_v2 as PayloadManager
+import payload_manager as PayloadManager
 import constants as constant
+import components.node as Node
 
 
 available_to_rx = False
@@ -40,12 +41,11 @@ class LoRaTransceiver:
     def receive_callback(self, payload_str):
         if self.verify_payload(payload_str) == True:
             payload = Payload(payload_str)
-            # print("Payload Received: " + payload.p_id)
             payload.print()
             PayloadManager.payload_received(payload)
-        # else:
-            # print("Payload Received: N/A")
-            # print(payload_str)
+        else:
+            print("Payload Received: N/A")
+            print(payload_str)
 
     def send_message(self, msg):
         # TOA = 390ms

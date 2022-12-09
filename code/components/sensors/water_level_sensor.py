@@ -12,6 +12,7 @@ class WaterLevelSensor(Sensor):
     
     def __init__(self, id, pin_numbers_list):
         super().__init__(id)
+        self.levels = []
         for pin_number in pin_numbers_list:
             self.levels.append(machine.Pin(pin_number, machine.Pin.IN, machine.Pin.PULL_UP))
 
@@ -26,9 +27,9 @@ class WaterLevelSensor(Sensor):
             sum += i
         
         if sum == 0:
-            return "LOW"
+            return "L"
         elif sum == len(switch_state_list):
-            return "OF"
+            return "H"
         else:
             return round((sum - 1) / (len(switch_state_list) - 1), 2)
         
