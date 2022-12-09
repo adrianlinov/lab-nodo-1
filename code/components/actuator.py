@@ -12,3 +12,7 @@ class Actuator():
     def get_id(self):
         '''Devuelve el id del actuador'''
         return self.id 
+
+    def safe_mode(self):
+        '''Pone el actuador en modo seguro'''
+        pass

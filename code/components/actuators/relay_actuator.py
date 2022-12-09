@@ -24,3 +24,7 @@ class RelayActuator(Actuator):
 
     def get_state(self):
         return self.pin.value()
+
+    def safe_mode(self):
+        '''Pone el actuador en modo seguro'''
+        self.pin.value(0)

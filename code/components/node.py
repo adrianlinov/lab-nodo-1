@@ -54,5 +54,7 @@ def get_actuator_list():
 
 def reset():
     Constants.reset_id()
+    for actuator in actuators:
+        actuator.safe_mode()
     # TODO Enter safe mode
     
