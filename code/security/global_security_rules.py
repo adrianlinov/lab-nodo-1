@@ -35,5 +35,5 @@ def security_loop():
                 if rule in security_rules_activated:
                     security_rules_activated.remove(rule)
                 pass
-        time.sleep(10)
+        time.sleep(60)
 

@@ -1,6 +1,7 @@
 
 class SecurityRule:
     def __init__(self, id, actuator, sensor, conditional, conditional_value, if_valid_value, if_not_valid_value):
+        self.id = id
         self.actuator = actuator
         self.sensor = sensor
         self.conditional = conditional
