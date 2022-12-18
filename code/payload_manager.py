@@ -24,8 +24,6 @@ def start():
     _thread.start_new_thread(connection_timeout_loop, ())
     # _thread.start_new_thread(no_ack1_received_loop, ())
     # _thread.start_new_thread(keep_alive_loop, ())
-
-    PayloadProcessor.start()
     register_in_network()
 
 
