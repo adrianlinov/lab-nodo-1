@@ -62,6 +62,7 @@ def init():
         aa8 = RelayActuator("AA8", 22)
         aa9 = RelayActuator("AA9", 23)
         aag1 = RelayActuator("AAG1", 13)
+        ap1 = RelayActuator("AP1", 12)
 
         sl1 = WaterLevelSensor("SL1", [17,16])
 
@@ -76,7 +77,8 @@ def init():
         actuators.append(aa7)
         actuators.append(aa8)
         actuators.append(aa9)
-        actuators.append(aag1)        
+        actuators.append(aag1)     
+        actuators.append(ap1)
 
         # Reglas de seguridad
         lsrg1 = SecurityRuleGroup("LSRG1", "AAG1", 0, 1, "all", True)
@@ -90,8 +92,14 @@ def init():
         lsrg1.security_rules.append(SecurityRule("LSR8", "AA8", None,"==", 0))
         lsrg1.security_rules.append(SecurityRule("LSR9", "AA9", None,"==", 0))
 
+        lsrg1 = SecurityRuleGroup("LSRG1", "AAG1", 0, 1, "all", True)
+
+        lsrg20 = SecurityRuleGroup("LSRG20", "AP1", 0, None, "all", True)
+        lsrg20.security_rules.append(SecurityRule("LSR21", "LS1", None,"==", "L"))
 
         GlobalSecurityRules.add_security_group(lsrg1)
+        GlobalSecurityRules.add_security_group(lsrg20)
+
 
     if Constants.NODE_NAME == "n_c":
         at1 = RelayActuator("AT1", 23)
@@ -135,58 +143,58 @@ def init():
         actuators.append(at9)
 
         lsrg2 = SecurityRuleGroup("LSRG2", "AT1", 0, None, "all", True)
-        lsrg2.security_rules.append(SecurityRule("LSR2", "STW1", None,">", 0))
+        lsrg2.security_rules.append(SecurityRule("LSR2", "STW1", None,">", 35))
 
         lsrg3 = SecurityRuleGroup("LSRG3", "AT2", 0, None, "all", True)
-        lsrg3.security_rules.append(SecurityRule("LSR3", "STW2", None,">", 0))
+        lsrg3.security_rules.append(SecurityRule("LSR3", "STW2", None,">", 35))
 
         lsrg4 = SecurityRuleGroup("LSRG4", "AT3", 0, None, "all", True)
-        lsrg4.security_rules.append(SecurityRule("LSR4", "STW3", None,">", 0))
+        lsrg4.security_rules.append(SecurityRule("LSR4", "STW3", None,">", 35))
 
         lsrg5 = SecurityRuleGroup("LSRG5", "AT4", 0, None, "all", True)
-        lsrg5.security_rules.append(SecurityRule("LSR5", "STW4", None,">", 0))
+        lsrg5.security_rules.append(SecurityRule("LSR5", "STW4", None,">", 35))
 
         lsrg6 = SecurityRuleGroup("LSRG6", "AT5", 0, None, "all", True)
-        lsrg6.security_rules.append(SecurityRule("LSR6", "STW5", None,">", 0))
+        lsrg6.security_rules.append(SecurityRule("LSR6", "STW5", None,">", 35))
 
         lsrg7 = SecurityRuleGroup("LSRG7", "AT6", 0, None, "all", True)
-        lsrg7.security_rules.append(SecurityRule("LSR7", "STW6", None,">", 0))
+        lsrg7.security_rules.append(SecurityRule("LSR7", "STW6", None,">", 35))
 
         lsrg8 = SecurityRuleGroup("LSRG8", "AT7", 0, None, "all", True)
-        lsrg8.security_rules.append(SecurityRule("LSR8", "STW7", None,">", 0))
+        lsrg8.security_rules.append(SecurityRule("LSR8", "STW7", None,">", 35))
 
         lsrg9 = SecurityRuleGroup("LSRG9", "AT8", 0, None, "all", True)
-        lsrg9.security_rules.append(SecurityRule("LSR9", "STW8", None,">", 0))
+        lsrg9.security_rules.append(SecurityRule("LSR9", "STW8", None,">", 35))
 
         lsrg10 = SecurityRuleGroup("LSRG10", "AT9", 0, None, "all", True)
-        lsrg10.security_rules.append(SecurityRule("LSR10", "STW9", None,">", 0))
+        lsrg10.security_rules.append(SecurityRule("LSR10", "STW9", None,">", 35))
 
         lsrg11 = SecurityRuleGroup("LSRG11", "AT1", 1, None, "all", True)
-        lsrg11.security_rules.append(SecurityRule("LSR11", "STW1", None,"<", 0))
+        lsrg11.security_rules.append(SecurityRule("LSR11", "STW1", None,"<", 20))
 
         lsrg12 = SecurityRuleGroup("LSRG12", "AT2", 1, None, "all", True)
-        lsrg12.security_rules.append(SecurityRule("LSR12", "STW2", None,"<", 0))
+        lsrg12.security_rules.append(SecurityRule("LSR12", "STW2", None,"<", 20))
 
         lsrg13 = SecurityRuleGroup("LSRG13", "AT3", 1, None, "all", True)
-        lsrg13.security_rules.append(SecurityRule("LSR13", "STW3", None,"<", 0))
+        lsrg13.security_rules.append(SecurityRule("LSR13", "STW3", None,"<", 20))
 
         lsrg14 = SecurityRuleGroup("LSRG14", "AT4", 1, None, "all", True)
-        lsrg14.security_rules.append(SecurityRule("LSR14", "STW4", None,"<", 0))
+        lsrg14.security_rules.append(SecurityRule("LSR14", "STW4", None,"<", 20))
 
         lsrg15 = SecurityRuleGroup("LSRG15", "AT5", 1, None, "all", True)
-        lsrg15.security_rules.append(SecurityRule("LSR15", "STW5", None,"<", 0))
+        lsrg15.security_rules.append(SecurityRule("LSR15", "STW5", None,"<", 20))
 
         lsrg16 = SecurityRuleGroup("LSRG16", "AT6", 1, None, "all", True)
-        lsrg16.security_rules.append(SecurityRule("LSR16", "STW6", None,"<", 0))
+        lsrg16.security_rules.append(SecurityRule("LSR16", "STW6", None,"<", 20))
 
         lsrg17 = SecurityRuleGroup("LSRG17", "AT7", 1, None, "all", True)
-        lsrg17.security_rules.append(SecurityRule("LSR17", "STW7", None,"<", 0))
+        lsrg17.security_rules.append(SecurityRule("LSR17", "STW7", None,"<", 20))
 
         lsrg18 = SecurityRuleGroup("LSRG18", "AT8", 1, None, "all", True)
-        lsrg18.security_rules.append(SecurityRule("LSR18", "STW8", None,"<", 0))
+        lsrg18.security_rules.append(SecurityRule("LSR18", "STW8", None,"<", 20))
 
         lsrg19 = SecurityRuleGroup("LSRG19", "AT9", 1, None, "all", True)
-        lsrg19.security_rules.append(SecurityRule("LSR19", "STW9", None,"<", 0))
+        lsrg19.security_rules.append(SecurityRule("LSR19", "STW9", None,"<", 20))
 
 
 
