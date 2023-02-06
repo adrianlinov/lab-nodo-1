@@ -1,5 +1,4 @@
 from lora import LoRa
-import machine
 import time
 import json
 import _thread

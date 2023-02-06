@@ -74,8 +74,6 @@ def _process_set_state(payload):
     if "a" in payload.data.keys():
         if payload.data["a"] != None and len(payload.data["a"]) > 0:
             for actuator_id in payload.data["a"].keys():
-                actuator = Node.get_actuator(actuator_id)
-                if actuator != None:
-                    response_payload.data["a"][actuator_id] = actuator.set_state(payload.data["a"][actuator_id])
+                response_payload.data["a"][actuator_id] = Node.set_actuator_state(actuator_id, payload.data["a"][actuator_id])
     return response_payload
 

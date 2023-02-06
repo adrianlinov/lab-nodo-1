@@ -32,6 +32,9 @@ class WaterLevelSensor(Sensor):
             return "H"
         else:
             return round((sum - 1) / (len(switch_state_list) - 1), 2)
+
+    def get_last_value(self):
+        return self.read()
         
 
         

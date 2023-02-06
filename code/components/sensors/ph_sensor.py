@@ -8,6 +8,7 @@ class PhSensor(Sensor):
         super().__init__(id)
         # USAR UART2
         self.serial = UART(uart_id, 9600)
+        self.last_value = None
             
     def read(self):
         '''Lee el valor del sensor'''
@@ -16,8 +17,9 @@ class PhSensor(Sensor):
         self.serial.write("R\r")
         time.sleep(1)
         response = self.serial.read().decode("utf-8").split("\r")[0]
+        self.last_value = float(response)
         self._sleep()
-        return response
+        return float(response)
 
     def _awake(self):
         try:

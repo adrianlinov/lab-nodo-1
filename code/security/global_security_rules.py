@@ -1,39 +1,39 @@
-import time
 import _thread
 
-security_rules = []
-security_rules_activated = []
+security_groups = []
 
 def start():
-    if len(security_rules) > 0:
+    if len(security_groups) > 0:
         _thread.start_new_thread(security_loop, ())
 
 
-def add_security_rule(rule):
-    security_rules.append(rule)
+def add_security_group(rule):
+    security_groups.append(rule)
+
+def reset():
+    global security_groups
+    security_groups = []
 
 
-def validate_actuator_security_rules(actuator_id):
-    for rule in security_rules:
-        if rule.actuator_id == actuator_id:
-            if rule.is_violated() == True:
-                return False
+def validate_security_rules():
+    for group in security_groups:
+        if group.is_violated() == True:
+            # avisar al gateway
+            pass
     return True
 
 
 def security_loop():
-    while True:
+    while security_groups > 0:
         # filter with high priority
-        for rule in security_rules:
-            if rule.is_violated(take_action=True) == True:
-                if rule not in security_rules_activated:
-                    security_rules_activated.append(rule)
+        for group in security_groups:
+            if group.violated == False:
+                if group.is_violated() == True:
+                    pass
+                    # avisar al gateway que se vulnero una regla de seguridad local de alta prioridad
+
+            if group.violated == True:
+                if group.is_violated() == False:
+                    pass
                     # avisar al gateway
-                # Regla de seguridad violada, avisar al gateway
-                pass
-            else:
-                if rule in security_rules_activated:
-                    security_rules_activated.remove(rule)
-                pass
-        time.sleep(60)
 

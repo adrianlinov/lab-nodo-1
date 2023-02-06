@@ -8,6 +8,7 @@ class OxygenSensor(Sensor):
         super().__init__(id)
         # USAR UART2
         self.serial = UART(uart_id, 9600)
+        self.last_value = None
         
 # TODO: Probar tiempos de lectura
     def read(self):
@@ -17,8 +18,12 @@ class OxygenSensor(Sensor):
         self.serial.write("R\r")
         time.sleep(1)
         response = self.serial.read().decode("utf-8").split("\r")[0]
+        self.last_value = float(response)
         self._sleep()
-        return response
+        return float(response)
+
+    def get_last_value(self):
+        return self.last_value
 
     def _awake(self):
         try:

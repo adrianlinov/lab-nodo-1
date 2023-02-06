@@ -7,9 +7,13 @@ class TemperatureSensor(Sensor):
         super().__init__(id)
         self.sensor = ds18x20.DS18X20(onewire.OneWire(machine.Pin(pin_number)))
         self.rom = self.ds_sensor.scan()[0]
+        self.last_value = None
         
     def read(self):
         '''Lee el valor del sensor'''
         self.sensor.convert_temp()
         time.sleep_ms(750)
         return round(self.ds_sensor.read_temp(self.rom), 1)
+
+    def get_last_value(self):
+        return self.last_value
