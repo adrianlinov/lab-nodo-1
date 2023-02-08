@@ -34,6 +34,17 @@ def init():
         ae9 = RelayActuator("AE9", 0)
         ae10 = RelayActuator("AE10", 21)
 
+        ae1.set_state(0)
+        ae2.set_state(0)
+        ae3.set_state(0)
+        ae4.set_state(0)
+        ae5.set_state(0)
+        ae6.set_state(0)
+        ae7.set_state(0)
+        ae8.set_state(0)
+        ae9.set_state(0)
+        ae10.set_state(0)
+        
         so1 = OxygenSensor("SO1", 0)
         sph1 = PhSensor("SPH1", 2)
 
@@ -65,6 +76,19 @@ def init():
         ap1 = RelayActuator("AP1", 12)
 
         sl1 = WaterLevelSensor("SL1", [17,16])
+
+
+        aa1.set_state(1)
+        aa2.set_state(1)
+        aa3.set_state(1)
+        aa4.set_state(1)
+        aa5.set_state(1)
+        aa6.set_state(1)
+        aa7.set_state(1)
+        aa8.set_state(1)
+        aa9.set_state(1)
+        aag1.set_state(1)
+        ap1.set_state(0)
 
         sensors.append(sl1)
 
@@ -122,6 +146,16 @@ def init():
         stw8 = TemperatureSensor("STW8", 12)
         stw9 = TemperatureSensor("STW9", 13)
 
+        at1.set_state(0)
+        at2.set_state(0)
+        at3.set_state(0)
+        at4.set_state(0)
+        at5.set_state(0)
+        at6.set_state(0)
+        at7.set_state(0)
+        at8.set_state(0)
+        at9.set_state(0)
+        
         sensors.append(stw1)
         sensors.append(stw2)
         sensors.append(stw3)
@@ -222,12 +256,11 @@ def init():
         ae11 = RelayActuator("AE11", 15)
         sl2 = WaterLevelSensor("SL2", [17,16,4,0,2])
 
+        ae11.set_state(1)
+
         sensors.append(sl2)
         actuators.append(ae11)
 
-        set_actuator_state("AE11", 1)
-
-    
 
     GlobalSecurityRules.start()
     
