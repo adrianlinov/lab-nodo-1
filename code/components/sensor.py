@@ -1,6 +1,10 @@
-class Sensor():
+from code.components.peripheral import Peripheral
+
+
+class Sensor(Peripheral):
     
-    def __init__(self, id):
+    def __init__(self, id, pool):
+        super().__init__(pool)
         self.id = id
 
     def read(self):

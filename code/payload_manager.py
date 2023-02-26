@@ -37,16 +37,9 @@ def register_in_network():
     payload.data["n_id"] = constants.NODE_ID
     Node.init()
 
-    payload.data["s"] = []
-    sensors = Node.get_sensor_list()
-    for sensor in sensors:
-        payload.data["s"].append(sensor.get_id())
-
-    payload.data["a"] = []
-    actuators = Node.get_actuator_list()
-    for actuator in actuators:
-        payload.data["a"].append(actuator.get_id())
-
+    payload.data["s"] = map(lambda x: x.get_id(), Node.get_sensor_list())
+    payload.data["a"] = map(lambda x: x.get_id(), Node.get_actuator_list())
+    
     tx_waiting_ack1.append(payload)
 
 def payload_received(p_received):

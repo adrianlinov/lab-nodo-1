@@ -5,8 +5,8 @@ from security import global_security_rules as GlobalSecurityRules
 
 class RelayActuator(Actuator):
     
-    def __init__(self, id, pin):
-        super().__init__(id)
+    def __init__(self, id, pool, pin):
+        super().__init__(id, pool)
         self.pin = Pin(pin, Pin.OUT)
         self.pin.value(1)
 

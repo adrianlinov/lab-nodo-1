@@ -10,8 +10,8 @@ import machine
 
 class WaterLevelSensor(Sensor):
     
-    def __init__(self, id, pin_numbers_list):
-        super().__init__(id)
+    def __init__(self, id, pool, pin_numbers_list):
+        super().__init__(id, pool)
         self.levels = []
         for pin_number in pin_numbers_list:
             self.levels.append(machine.Pin(pin_number, machine.Pin.IN, machine.Pin.PULL_UP))

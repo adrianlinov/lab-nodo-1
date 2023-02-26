@@ -3,8 +3,8 @@ import machine, onewire, ds18x20, time
 
 class TemperatureSensor(Sensor):
     
-    def __init__(self, id, pin_number):
-        super().__init__(id)
+    def __init__(self, id, pool, pin_number):
+        super().__init__(id, pool)
         self.sensor = ds18x20.DS18X20(onewire.OneWire(machine.Pin(pin_number)))
         self.rom = self.ds_sensor.scan()[0]
         self.last_value = None

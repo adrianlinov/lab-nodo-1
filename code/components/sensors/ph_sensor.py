@@ -4,8 +4,8 @@ import time
 
 class PhSensor(Sensor):
     
-    def __init__(self, id, uart_id):
-        super().__init__(id)
+    def __init__(self, id, pool, uart_id):
+        super().__init__(id, pool)
         # USAR UART2
         self.serial = UART(uart_id, 9600)
         self.last_value = None
