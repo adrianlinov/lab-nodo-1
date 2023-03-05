@@ -1,17 +1,17 @@
-from code.components.peripheral import Peripheral
+from components.peripheral import Peripheral
 
 
 class Actuator(Peripheral):
 
-    def __init__(self, id, pool):
+    def __init__(self, id_actuator, pool):
+        self.id = id_actuator
         super().__init__(pool)
-        self.id = id
 
 
     def set_state(self, newState):
         pass
 
-    def get_state(self):
+    def read(self):
         pass
 
     def get_id(self):

@@ -5,10 +5,10 @@ from security import global_security_rules as GlobalSecurityRules
 
 class RelayActuator(Actuator):
     
-    def __init__(self, id, pool, pin):
-        super().__init__(id, pool)
+    def __init__(self, id_actuator, pool, pin):
         self.pin = Pin(pin, Pin.OUT)
         self.pin.value(1)
+        super().__init__(id_actuator, pool)
 
     def set_state(self, newState):
         if GlobalSecurityRules.validate_actuator_security_rules(self.get_id()) == True:
@@ -22,7 +22,7 @@ class RelayActuator(Actuator):
             # informar que no se cumplen las reglas de seguridad para activar el actuador
             raise ValueError("Security rules not validated")
 
-    def get_state(self):
+    def read(self):
         return self.pin.value()
 
     def safe_mode(self):

@@ -8,7 +8,6 @@ import constants
 import random
 import components.node as Node
 
-registered_by_gateway = False
 
 tx_waiting_ack1 = []
 tx_timeout_ack2 = []
@@ -24,23 +23,10 @@ def start():
     _thread.start_new_thread(connection_timeout_loop, ())
     # _thread.start_new_thread(no_ack1_received_loop, ())
     # _thread.start_new_thread(keep_alive_loop, ())
-    register_in_network()
+    Node.register_in_network()
 
 
-def register_in_network():
-    global registered_by_gateway
-    registered_by_gateway = False
-    payload = Payload()
-    payload.receiver = "gw"
-    payload.action = "register"
-    payload.data["n_n"] = constants.NODE_NAME
-    payload.data["n_id"] = constants.NODE_ID
-    Node.init()
 
-    payload.data["s"] = map(lambda x: x.get_id(), Node.get_sensor_list())
-    payload.data["a"] = map(lambda x: x.get_id(), Node.get_actuator_list())
-    
-    tx_waiting_ack1.append(payload)
 
 def payload_received(p_received):
     """
@@ -49,6 +35,7 @@ def payload_received(p_received):
 
     Se debe usar cada vez que se reciben datos nuevos
     """
+    Node.last_received_time = time.time()
     if p_received.action == "ack_1":
         on_ack1_received(p_received)
     elif p_received.action == "ack_2":
@@ -74,8 +61,7 @@ def payload_waiting_ack1_loop():
             payload.tx_payload_send_count += 1
             if payload.tx_payload_send_count > 3:
                 payload.priority = 1
-            payload_to_send.append(payload)
-            tx_waiting_ack1.append(payload)
+            send_payload(payload)
             time.sleep(random.randint(1, 5))
 
 def payload_sending_ack1_loop():
@@ -95,7 +81,7 @@ def on_ack1_received(ack1_payload):
             payload = x
             break
     if payload != None:
-        if (payload.action == "register" and not registered_by_gateway) or (register_in_network):
+        if (payload.action == "register" and not Node.registered_by_gateway) or (Node.register_in_network):
             tx_waiting_ack1.remove(payload)
             # TODO: SUMAR 1 AL CONTADOR DE ACK2 ENVIADOS y ACTUALIZAR LAST_ACK1_RECEIVED_TIME
             
@@ -108,7 +94,7 @@ def on_ack1_received(ack1_payload):
             break
     
     if payload != None:
-        if (payload.action == "register" and not registered_by_gateway) or (register_in_network):
+        if (payload.action == "register" and not Node.registered_by_gateway) or (Node.register_in_network):
             tx_timeout_ack2.remove(payload)
             payload_to_send.append(payload.generate_ack2())
             payload.tx_last_ack1_time = time.time()
@@ -145,8 +131,7 @@ def timeout_for_processing():
             if time.time() - payload.tx_last_ack1_time > 60:
                 tx_timeout_ack2.remove(payload)
                 if payload.action == "register":
-                    global registered_by_gateway
-                    registered_by_gateway = True
+                    Node.registered_by_gateway = True
                 # PAYLOAD FUE SATISFACTORIAMENTE ENVIADO
                 # !!! SE ACABA EL PROCESO DE TX !!!
 
@@ -160,20 +145,23 @@ def get_payload_to_send():
         return payload_to_send.pop(0)
     else:
         return None
+    
+def send_payload(payload):
+    payload_to_send.append(payload)
+    tx_waiting_ack1.append(payload)
 
 
 def connection_timeout_loop():
     '''Verifica si no se recibió un paquete por mas de 60 segundos'''
     while True:
-        if time.time() - Node.last_received_time > 60 and register_in_network:
-            global registered_by_gateway
+        if time.time() - Node.last_received_time > 240 and Node.register_in_network:
             global tx_waiting_ack1
             global tx_timeout_ack2
             global rx_sending_ack1
             global rx_to_process
             global payload_to_send
 
-            registered_by_gateway = False
+            Node.registered_by_gateway = False
             tx_waiting_ack1 = []
             tx_timeout_ack2 = []
             rx_sending_ack1 = []

@@ -1,3 +1,4 @@
+from payload import Payload
 from components.sensors.oxygen_sensor import OxygenSensor
 from components.sensors.ph_sensor import PhSensor
 from components.actuators.relay_actuator import RelayActuator
@@ -8,10 +9,13 @@ from security.security_rule import SecurityRule
 from security.security_rule_group import SecurityRuleGroup
 import constants as Constants
 import time
+import payload_manager as PayloadManager
 
 sensors = []
 actuators = []
 last_received_time = time.time()
+
+registered_by_gateway = False
 
 def init():
     print("init executed sensor and actuators executed")
@@ -248,6 +252,7 @@ def init():
         GlobalSecurityRules.add_security_group(lg17)
         GlobalSecurityRules.add_security_group(lg18)
         
+        
 
     if Constants.NODE_NAME == "n_d":
         ae11 = RelayActuator("AE11", None, 15)
@@ -261,6 +266,21 @@ def init():
 
     GlobalSecurityRules.start()
     
+def register_in_network():
+    global registered_by_gateway
+    registered_by_gateway = False
+    payload = Payload()
+    payload.receiver = "gw"
+    payload.action = "register"
+    payload.data["n_n"] = Constants.NODE_NAME
+    payload.data["n_id"] = Constants.NODE_ID
+    init()
+
+    payload.data["s"] = list(map(lambda x: x.get_id(), get_sensor_list()))
+    payload.data["a"] = list(map(lambda x: x.get_id(), get_actuator_list()))
+    
+    PayloadManager.send_payload(payload)
+
 def get_sensor(sensor_id):
     for sensor in sensors:
         if sensor.get_id() == sensor_id:
@@ -296,10 +316,10 @@ def reset():
     Constants.reset_id()
     for actuator in actuators:
         actuator.safe_mode()
-    global sensors
-    global actuators
-    sensors = []
-    actuators = []
+    sensors.clear()
+    actuators.clear()
     GlobalSecurityRules.reset()
+    register_in_network()
+    
     # TODO Enter safe mode
 

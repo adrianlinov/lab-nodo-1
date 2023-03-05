@@ -1,4 +1,4 @@
-from code.components.peripheral import Peripheral
+from components.peripheral import Peripheral
 
 
 class Sensor(Peripheral):

@@ -41,7 +41,7 @@ def _process_read(payload):
             for actuator_id in payload.data["a"]:
                 actuator = Node.get_actuator(actuator_id)
                 if actuator != None:
-                    response_payload.data["a"][actuator_id] = actuator.get_state()
+                    response_payload.data["a"][actuator_id] = actuator.read()
     return response_payload
 
 def _process_ping(payload):
@@ -62,7 +62,7 @@ def _process_read_all(payload):
         response_payload.data["s"][sensor.get_id()] = sensor.read()
     
     for actuator in Node.get_actuator_list():
-        response_payload.data["a"][actuator.get_id()] = actuator.get_state()
+        response_payload.data["a"][actuator.get_id()] = actuator.read()
 
     return response_payload
 

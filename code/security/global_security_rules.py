@@ -1,4 +1,7 @@
 import _thread
+import sys
+
+import components.node as Node
 
 security_groups = []
 
@@ -22,18 +25,32 @@ def validate_security_rules():
             pass
     return True
 
+def validate_actuator_security_rules(id_actuator):
+    for group in security_groups:
+        if group.id_output_actuator == id_actuator:
+            if group.is_violated() == True:
+                # avisar al gateway
+                return False
+    return True
+
 
 def security_loop():
-    while security_groups > 0:
-        # filter with high priority
-        for group in security_groups:
-            if group.violated == False:
-                if group.is_violated() == True:
-                    pass
-                    # avisar al gateway que se vulnero una regla de seguridad local de alta prioridad
+    try:
+        while True:
+            if Node.registered_by_gateway == True:
+                print("Checking security rules")
+                for group in security_groups:
+                    group.is_violated()
+                    if group.violated == False:
+                        if group.is_violated() == True:
+                            pass
+                            # avisar al gateway que se vulnero una regla de seguridad local de alta prioridad
 
-            if group.violated == True:
-                if group.is_violated() == False:
-                    pass
-                    # avisar al gateway
+                    if group.violated == True:
+                        if group.is_violated() == False:
+                            pass
+                            # avisar al gateway
+    except Exception as e:
+        sys.print_exception(e)
+        
 

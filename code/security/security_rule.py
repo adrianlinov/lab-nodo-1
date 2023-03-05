@@ -11,38 +11,37 @@ class SecurityRule:
         self.conditional_value = conditional_value
 
     def is_violated(self):
-
         if self.input_actuator_id is not None:
             if self.conditional == ">":
-                if Node.get_actuator(self.input_actuator_id).get_state() > self.conditional_value:
+                if Node.get_actuator(self.input_actuator_id).read() > self.conditional_value:
                     return True
                 else:
                     return False
             elif self.conditional == "<":
-                if Node.get_actuator(self.input_actuator_id).get_state() < self.conditional_value:
+                if Node.get_actuator(self.input_actuator_id).read() < self.conditional_value:
                     return True
                 else:
                     return False
             elif self.conditional == "==":
-                if Node.get_actuator(self.input_actuator_id).get_state() == self.conditional_value:
+                if Node.get_actuator(self.input_actuator_id).read() == self.conditional_value:
                     return True
                 else:
                     return False
 
             elif self.conditional == "!=":
-                if Node.get_actuator(self.input_actuator_id).get_state() != self.conditional_value:
+                if Node.get_actuator(self.input_actuator_id).read() != self.conditional_value:
                     return True
                 else:
                     return False
 
             elif self.conditional == ">=":
-                if Node.get_actuator(self.input_actuator_id).get_state() >= self.conditional_value:
+                if Node.get_actuator(self.input_actuator_id).read() >= self.conditional_value:
                     return True
                 else:
                     return False
 
             elif self.conditional == "<=":
-                if Node.get_actuator(self.input_actuator_id).get_state() <= self.conditional_value:
+                if Node.get_actuator(self.input_actuator_id).read() <= self.conditional_value:
                     return True
                 else:
                     return False
@@ -54,35 +53,35 @@ class SecurityRule:
 
         elif self.input_sensor_id is not None:
             if self.conditional == ">":
-                if Node.get_sensor(self.input_sensor_id).get_state() > self.conditional_value:
+                if Node.get_sensor(self.input_sensor_id).read() > self.conditional_value:
                     return True
                 else:
                     return False
             elif self.conditional == "<":
-                if Node.get_sensor(self.input_sensor_id).get_state() < self.conditional_value:
+                if Node.get_sensor(self.input_sensor_id).read() < self.conditional_value:
                     return True
                 else:
                     return False
             elif self.conditional == "==":
-                if Node.get_sensor(self.input_sensor_id).get_state() == self.conditional_value:
+                if Node.get_sensor(self.input_sensor_id).read() == self.conditional_value:
                     return True
                 else:
                     return False
 
             elif self.conditional == "!=":
-                if Node.get_sensor(self.input_sensor_id).get_state() != self.conditional_value:
+                if Node.get_sensor(self.input_sensor_id).read() != self.conditional_value:
                     return True
                 else:
                     return False
 
             elif self.conditional == ">=":
-                if Node.get_sensor(self.input_sensor_id).get_state() >= self.conditional_value:
+                if Node.get_sensor(self.input_sensor_id).read() >= self.conditional_value:
                     return True
                 else:
                     return False
 
             elif self.conditional == "<=":
-                if Node.get_sensor(self.input_sensor_id).get_state() <= self.conditional_value:
+                if Node.get_sensor(self.input_sensor_id).read() <= self.conditional_value:
                     return True
                 else:
                     return False

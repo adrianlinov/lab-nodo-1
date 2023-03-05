@@ -6,6 +6,7 @@ from payload import Payload
 import payload_manager as PayloadManager
 import constants as constant
 import components.node as Node
+import sys
 
 
 available_to_rx = False
@@ -26,8 +27,16 @@ class LoRaTransceiver:
             if payload_obj.receiver == constant.NODE_ID:
                 return True
             else: 
+                print(payload_obj.receiver) 
+                print(constant.NODE_ID)
+                print(len(payload_obj.receiver))
+                print(len(constant.NODE_ID))
+                print(type(payload_obj.receiver))
+                print(type(constant.NODE_ID))
+                print("Error de validacion por ID")
                 return False
         else:
+            print("Error de validacion por checksum")
             return False
 
 
@@ -80,4 +89,4 @@ if __name__ == '__main__':
     try:
         main()
     except Exception as e:
-        print(e)
+        sys.print_exception(e)
