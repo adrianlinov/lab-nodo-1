@@ -22,7 +22,7 @@ class WaterLevelSensor(Sensor):
         '''
         # TODO Revisar lectura
         sum = 0
-        switch_state_list = list(map(lambda x: x.value(), self.levels))
+        switch_state_list = list(map(lambda x: 1 - x.value(), self.levels))
         for i in switch_state_list:
             sum += i
         
