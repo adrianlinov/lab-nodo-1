@@ -145,37 +145,37 @@ def init():
 
 
     if Constants.NODE_NAME == "n_c":
-        at1 = RelayActuator("AT1", "1", 3)
-        at2 = RelayActuator("AT2", "2", 1)
-        at3 = RelayActuator("AT3", "3", 22)
-        at4 = RelayActuator("AT4", "4", 23)
-        at5 = RelayActuator("AT5", "5", 13)
-        at6 = RelayActuator("AT6", "6", 12)
-        at7 = RelayActuator("AT7", "7", 25)
-        at8 = RelayActuator("AT8", "8", 33)
-        at9 = RelayActuator("AT9", "9", 32)
+        at1 = RelayActuator("AT1", "1", 13)
+        # at2 = RelayActuator("AT2", "2", 12)
+        # at3 = RelayActuator("AT3", "3", 14)
+        # at4 = RelayActuator("AT4", "4", 25)
+        # at5 = RelayActuator("AT5", "5", 33)
+        # at6 = RelayActuator("AT6", "6", 32)
+        # at7 = RelayActuator("AT7", "7", 35)
+        # at8 = RelayActuator("AT8", "8", 34)
+        # at9 = RelayActuator("AT9", "9", 39)
         
-        # stw1 = TemperatureSensor("STW1", "1", 7) # Cambiar
-        # stw2 = TemperatureSensor("STW2", "2", 8) # Cambiar
-        # stw3 = TemperatureSensor("STW3", "3", 15) # Cambiar
-        # stw4 = TemperatureSensor("STW4", "4", 2) # Cambiar
-        # stw5 = TemperatureSensor("STW5", "5", 0)
-        # stw6 = TemperatureSensor("STW6", "6", 4)
-        # stw7 = TemperatureSensor("STW7", "7", 16)
-        # stw8 = TemperatureSensor("STW8", "8", 17)
-        # stw9 = TemperatureSensor("STW9", "9", 21)
+        stw1 = TemperatureSensor("STW1", "1", 35) # Cambiar
+        # stw2 = TemperatureSensor("STW2", "2", 2) # Cambiar
+        # stw3 = TemperatureSensor("STW3", "3", 0) # Cambiar
+        # stw4 = TemperatureSensor("STW4", "4", 4) # Cambiar
+        # stw5 = TemperatureSensor("STW5", "5", 16)
+        # stw6 = TemperatureSensor("STW6", "6", 17)
+        # stw7 = TemperatureSensor("STW7", "7", 3)
+        # stw8 = TemperatureSensor("STW8", "8", 1)
+        # stw9 = TemperatureSensor("STW9", "9", 22)
 
         at1.set_state(0)
-        at2.set_state(0)
-        at3.set_state(0)
-        at4.set_state(0)
-        at5.set_state(0)
-        at6.set_state(0)
-        at7.set_state(0)
-        at8.set_state(0)
-        at9.set_state(0)
+        # at2.set_state(0)
+        # at3.set_state(0)
+        # at4.set_state(0)
+        # at5.set_state(0)
+        # at6.set_state(0)
+        # at7.set_state(0)
+        # at8.set_state(0)
+        # at9.set_state(0)
         
-        # sensors.append(stw1)
+        sensors.append(stw1)
         # sensors.append(stw2)
         # sensors.append(stw3)
         # sensors.append(stw4)
@@ -186,14 +186,14 @@ def init():
         # sensors.append(stw9)
 
         actuators.append(at1)
-        actuators.append(at2)
-        actuators.append(at3)
-        actuators.append(at4)
-        actuators.append(at5)
-        actuators.append(at6)
-        actuators.append(at7)
-        actuators.append(at8)
-        actuators.append(at9)
+        # actuators.append(at2)
+        # actuators.append(at3)
+        # actuators.append(at4)
+        # actuators.append(at5)
+        # actuators.append(at6)
+        # actuators.append(at7)
+        # actuators.append(at8)
+        # actuators.append(at9)
 
         # lg01 = SecurityRuleGroup("LG01", "AT1", 1, None, "all", True)
         # lg02 = SecurityRuleGroup("LG02", "AT1", 0, None, "all", True)

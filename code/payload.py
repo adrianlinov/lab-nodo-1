@@ -64,10 +64,10 @@ class Payload:
         return response_payload
 
     def to_json(self):
-        return json.dumps(self.to_dic())
+        return json.dumps(self.to_dic()).replace(" ", '')
         
     def to_json_with_checksum(self):
-        return self.to_json() + "-" + str(sum(bytearray(self.to_json(),'utf8')))
+        return self.to_json().replace(" ", '') + "-" + str(sum(bytearray(self.to_json(),'utf8')))
 
     def print(self):
         if self.action == "ack_1":

@@ -7,6 +7,7 @@ import payload_manager as PayloadManager
 import constants as constant
 import components.node as Node
 import sys
+import machine, onewire, ds18x20
 
 
 available_to_rx = False
@@ -85,8 +86,22 @@ def main():
         time.sleep(.5)
         print(" ")
 
+def try_ds18b20():
+    while True:
+        sensor = ds18x20.DS18X20(onewire.OneWire(machine.Pin(13)))
+        roms = sensor.scan()
+        sensor.convert_temp()
+        time.sleep_ms(750)
+        for rom in roms:
+            print(type(rom))
+            print(''.join('{:02x}'.format(byte) for byte in rom))
+            print(sensor.read_temp(rom))
+        time.sleep(5)
+        print("====================================")
+
 if __name__ == '__main__':
     try:
-        main()
+        # main()
+        try_ds18b20()
     except Exception as e:
         sys.print_exception(e)
