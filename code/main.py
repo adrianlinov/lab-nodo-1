@@ -1,13 +1,14 @@
-from lora import LoRa
+# from lora import LoRa
 import time
 import json
 import _thread
-from payload import Payload
-import payload_manager as PayloadManager
-import constants as constant
-import components.node as Node
+# from payload import Payload
+# import payload_manager as PayloadManager
+# import constants as constant
+# import components.node as Node
 import sys
-import machine, onewire, ds18x20
+import machine, onewire
+# import ds18x20
 
 
 available_to_rx = False
@@ -96,12 +97,30 @@ def try_ds18b20():
             print(type(rom))
             print(''.join('{:02x}'.format(byte) for byte in rom))
             print(sensor.read_temp(rom))
+            print("")
         time.sleep(5)
         print("====================================")
 
+def try_airvalves():
+    pins = [2, 5, 4, 22, 23, 12, 25, 33, 32]
+    pm = [machine.Pin(2, machine.Pin.OUT), machine.Pin(5, machine.Pin.OUT), machine.Pin(4, machine.Pin.OUT), machine.Pin(22, machine.Pin.OUT), machine.Pin(23, machine.Pin.OUT), machine.Pin(12, machine.Pin.OUT), machine.Pin(25, machine.Pin.OUT), machine.Pin(33, machine.Pin.OUT), machine.Pin(32, machine.Pin.OUT)]
+    # Turn pins on for 5 seconds, then off for 5 seconds, repeat.
+    
+    while True:
+        print("OFF")
+        for p in pm:
+            p.off()
+        time.sleep(5)
+        print("ON")
+        for p in pm:
+            p.off()
+        time.sleep(5)
+
 if __name__ == '__main__':
     try:
-        # main()
-        try_ds18b20()
+        main()
+        print("started")
+        # try_ds18b20()
+        # try_airvalves()
     except Exception as e:
         sys.print_exception(e)

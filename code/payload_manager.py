@@ -82,9 +82,7 @@ def on_ack1_received(ack1_payload):
             break
     if payload != None:
         if (payload.action == "register" and not Node.registered_by_gateway) or (Node.register_in_network):
-            tx_waiting_ack1.remove(payload)
-            # TODO: SUMAR 1 AL CONTADOR DE ACK2 ENVIADOS y ACTUALIZAR LAST_ACK1_RECEIVED_TIME
-            
+            tx_waiting_ack1.remove(payload)            
             tx_timeout_ack2.append(payload)
             payload_to_send.append(payload.generate_ack2())
 
@@ -98,7 +96,6 @@ def on_ack1_received(ack1_payload):
             tx_timeout_ack2.remove(payload)
             payload_to_send.append(payload.generate_ack2())
             payload.tx_last_ack1_time = time.time()
-            # TODO: SUMAR 1 AL CONTADOR DE ACK2 ENVIADOS y ACTUALIZAR LAST_ACK1_RECEIVED_TIME
             tx_timeout_ack2.append(payload)
 
 def rx_to_process_loop():

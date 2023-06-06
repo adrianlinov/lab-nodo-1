@@ -10,7 +10,6 @@ class OxygenSensor(Sensor):
         self.serial = UART(uart_id, 9600)
         self.last_value = None
         
-# TODO: Probar tiempos de lectura
     def read(self):
         '''Lee el valor del sensor'''
         self.serial.read()
