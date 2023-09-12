@@ -1,3 +1,4 @@
+from components.sampler import Sampler
 from payload import Payload
 from components.sensors.oxygen_sensor import OxygenSensor
 from components.sensors.ph_sensor import PhSensor
@@ -30,27 +31,28 @@ def init():
     if Constants.NODE_NAME == "n_a":
 
         # Actuadores de Bombas para Sistema de muestreo
-        ap1 = RelayActuator("AP1", "1", 15)
-        ap2 = RelayActuator("AP2", "2", 22)
-        ap3 = RelayActuator("AP3", "3", 23)
-        ap4 = RelayActuator("AP4", "4", 13)
-        ap5 = RelayActuator("AP5", "5", 12)
-        ap6 = RelayActuator("AP6", "6", 25)
-        ap7 = RelayActuator("AP7", "7", 33)
-        ap8 = RelayActuator("AP8", "8", 32)
-        ap9 = RelayActuator("AP9", "9", 0)
-        ae1 = RelayActuator("AE1", None, 21)
+        ae1 = RelayActuator("AE1", "1", 15)
+        ae2 = RelayActuator("AE2", "2", 22)
+        ae3 = RelayActuator("AE3", "3", 23)
+        ae4 = RelayActuator("AE4", "4", 13)
+        ae5 = RelayActuator("AE5", "5", 12)
+        ae6 = RelayActuator("AE6", "6", 25)
+        ae7 = RelayActuator("AE7", "7", 33)
+        ae8 = RelayActuator("AE8", "8", 32)
+        ae9 = RelayActuator("AE9", "9", 0)
+        ae10 = RelayActuator("AE10", None, 21)
 
-        ap1.set_state(0)
-        ap2.set_state(0)
-        ap3.set_state(0)
-        ap4.set_state(0)
-        ap5.set_state(0)
-        ap6.set_state(0)
-        ap7.set_state(0)
-        ap8.set_state(0)
-        ap9.set_state(0)
         ae1.set_state(0)
+        ae2.set_state(0)
+        ae3.set_state(0)
+        ae4.set_state(0)
+        ae5.set_state(0)
+        ae6.set_state(0)
+        ae7.set_state(0)
+        ae8.set_state(0)
+        ae9.set_state(0)
+        ae10.set_state(0)
+
         
         # Sensores de Oxigeno y PH
         so1 = OxygenSensor("SO1", "*", 0)
@@ -59,16 +61,24 @@ def init():
         sensors.append(so1)
         sensors.append(sph1)
 
-        actuators.append(ap1)
-        actuators.append(ap2)
-        actuators.append(ap3)
-        actuators.append(ap4)
-        actuators.append(ap5)
-        actuators.append(ap6)
-        actuators.append(ap7)
-        actuators.append(ap8)
-        actuators.append(ap9)
         actuators.append(ae1)
+        actuators.append(ae2)
+        actuators.append(ae3)
+        actuators.append(ae4)
+        actuators.append(ae5)
+        actuators.append(ae6)
+        actuators.append(ae7)
+        actuators.append(ae8)
+        actuators.append(ae9)
+        actuators.append(ae10)
+
+        sampler = Sampler([
+            ae1, ae2, ae3, ae4, ae5, ae6, ae7, ae8, ae9
+        ],
+        ae10,
+        so1,
+        sph1
+        )
 
         # Reglas de Seguridad para el AE1
 
