@@ -1,4 +1,4 @@
-from components.sampler import Sampler
+from components.sensors.sampler import Sampler
 from payload import Payload
 from components.sensors.oxygen_sensor import OxygenSensor
 from components.sensors.ph_sensor import PhSensor

@@ -1,11 +1,10 @@
-# from lora import LoRa
+print("importing")
+from lora import LoRa
 import time
-import json
 import _thread
-# from payload import Payload
-# import payload_manager as PayloadManager
-# import constants as constant
-# import components.node as Node
+from payload import Payload
+import payload_manager as PayloadManager
+import constants as constant
 import sys
 import machine, onewire
 # import ds18x20
@@ -118,8 +117,8 @@ def try_airvalves():
 
 if __name__ == '__main__':
     try:
-        main()
         print("started")
+        main()
         # try_ds18b20()
         # try_airvalves()
     except Exception as e:
