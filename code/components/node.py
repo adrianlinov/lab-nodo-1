@@ -1,3 +1,5 @@
+from components.sensors.flowmeter_sensor import FlowMeterSensor
+from components.sensors.conductivity_sensor import ConductivitySensor
 from components.sensors.sampler import Sampler
 from payload import Payload
 from components.sensors.oxygen_sensor import OxygenSensor
@@ -30,140 +32,80 @@ def init():
     # Registrar sensores, actuadores y reglas de seguridad
     if Constants.NODE_NAME == "n_a":
 
-        # Actuadores de Bombas para Sistema de muestreo
+        sf1 = FlowMeterSensor("SF1", "1", 13)
+        sf2 = FlowMeterSensor("SF2", "2", 13)
+        sf3 = FlowMeterSensor("SF3", "3", 13)
+        sf4 = FlowMeterSensor("SF4", "4", 13)
+        sf5 = FlowMeterSensor("SF5", "5", 13)
+
+
         ae1 = RelayActuator("AE1", "1", 15)
-        ae2 = RelayActuator("AE2", "2", 22)
-        ae3 = RelayActuator("AE3", "3", 23)
-        ae4 = RelayActuator("AE4", "4", 13)
-        ae5 = RelayActuator("AE5", "5", 12)
-        ae6 = RelayActuator("AE6", "6", 25)
-        ae7 = RelayActuator("AE7", "7", 33)
-        ae8 = RelayActuator("AE8", "8", 32)
-        ae9 = RelayActuator("AE9", "9", 0)
-        ae10 = RelayActuator("AE10", None, 21)
+        ae2 = RelayActuator("AE2", "2", 2)
+        ae3 = RelayActuator("AE3", "3", 0)
+        ae4 = RelayActuator("AE4", "4", 4)
+        ae5 = RelayActuator("AE5", "5", 21)
 
         ae1.set_state(0)
         ae2.set_state(0)
         ae3.set_state(0)
         ae4.set_state(0)
         ae5.set_state(0)
-        ae6.set_state(0)
-        ae7.set_state(0)
-        ae8.set_state(0)
-        ae9.set_state(0)
-        ae10.set_state(0)
 
-        
-        # Sensores de Oxigeno y PH
-        so1 = OxygenSensor("SO1", "*", 0)
-        sph1 = PhSensor("SPH1", "*", 2)
-
-        sensors.append(so1)
-        sensors.append(sph1)
+        sensors.append(sf1)
+        sensors.append(sf2)
+        sensors.append(sf3)
+        sensors.append(sf4)
+        sensors.append(sf5)
 
         actuators.append(ae1)
         actuators.append(ae2)
         actuators.append(ae3)
         actuators.append(ae4)
         actuators.append(ae5)
+
+        # TODO COLOCAR REGLAS DE SEGURODAD
+
+
+
+
+
+
+
+    if Constants.NODE_NAME == "n_b":
+
+        sf6 = FlowMeterSensor("SF6", "6", 13)
+        sf7 = FlowMeterSensor("SF7", "7", 13)
+        sf8 = FlowMeterSensor("SF8", "8", 13)
+        sf9 = FlowMeterSensor("SF9", "9", 13)
+
+
+        ae6 = RelayActuator("AE6", "6", 15)
+        ae7 = RelayActuator("AE7", "7", 2)
+        ae8 = RelayActuator("AE8", "8", 0)
+        ae9 = RelayActuator("AE9", "9", 4)
+
+        ae6.set_state(0)
+        ae7.set_state(0)
+        ae8.set_state(0)
+        ae9.set_state(0)
+
+        sensors.append(sf6)
+        sensors.append(sf7)
+        sensors.append(sf8)
+        sensors.append(sf9)
+
         actuators.append(ae6)
         actuators.append(ae7)
         actuators.append(ae8)
         actuators.append(ae9)
-        actuators.append(ae10)
 
-        sampler = Sampler([
-            ae1, ae2, ae3, ae4, ae5, ae6, ae7, ae8, ae9
-        ],
-        ae10,
-        so1,
-        sph1
-        )
+        # TODO COLOCAR REGLAS DE SEGURODAD
 
-        # Reglas de Seguridad para el AE1
-
-    if Constants.NODE_NAME == "n_b":
-
-        # Actuadores de Aireadores
-        aa1 = RelayActuator("AA1", "1", 15)
-        aa2 = RelayActuator("AA2", "2", 2)
-        aa3 = RelayActuator("AA3", "3", 0)
-        aa4 = RelayActuator("AA4", "4", 4)
-        aa5 = RelayActuator("AA5", "5", 25)
-        aa6 = RelayActuator("AA6", "6", 33)
-        aa7 = RelayActuator("AA7", "7", 21)
-        aa8 = RelayActuator("AA8", "8", 22)
-        aa9 = RelayActuator("AA9", "9", 23)
-        aag1 = RelayActuator("AAG1", None, 13)
-
-        # Actuadores de Bomba 1
-        ap10 = RelayActuator("AP10", None, 12)
         
-        # Actuadores de Bomba 2
-        # ap11 = RelayActuator("AP11", None, 12)
-
-        # Sensores de Nivel de Agua
-        sl1 = WaterLevelSensor("SL1", None, [17,16])
-
-
-        aa1.set_state(1)
-        aa2.set_state(1)
-        aa3.set_state(1)
-        aa4.set_state(1)
-        aa5.set_state(1)
-        aa6.set_state(1)
-        aa7.set_state(1)
-        aa8.set_state(1)
-        aa9.set_state(1)
-        aag1.set_state(1)
-        ap10.set_state(0)
-        # ap11.set_state(0)
-
-        sensors.append(sl1)
-
-        actuators.append(aa1)
-        actuators.append(aa2)
-        actuators.append(aa3)
-        actuators.append(aa4)
-        actuators.append(aa5)
-        actuators.append(aa6)
-        actuators.append(aa7)
-        actuators.append(aa8)
-        actuators.append(aa9)
-        actuators.append(aag1)
-        actuators.append(ap10)
-        # actuators.append(ap11)
-        
-        lg19 = SecurityRuleGroup("LG19", "AAG1", 1, None, "any", True)
-        lg20 = SecurityRuleGroup("LG20", "AAG1", 0, None, "all", True)
-        lg21 = SecurityRuleGroup("LG21", "AP10", 0, None, "all", True)
-        
-        lg19.security_rules.append(SecurityRule("L19", "AA1", None,"==", 1))
-        lg19.security_rules.append(SecurityRule("L20", "AA2", None,"==", 1))
-        lg19.security_rules.append(SecurityRule("L21", "AA3", None,"==", 1))
-        lg19.security_rules.append(SecurityRule("L22", "AA4", None,"==", 1))
-        lg19.security_rules.append(SecurityRule("L23", "AA5", None,"==", 1))
-        lg19.security_rules.append(SecurityRule("L24", "AA6", None,"==", 1))
-        lg19.security_rules.append(SecurityRule("L25", "AA7", None,"==", 1))
-        lg19.security_rules.append(SecurityRule("L26", "AA8", None,"==", 1))
-        lg19.security_rules.append(SecurityRule("L27", "AA9", None,"==", 1))
-        lg20.security_rules.append(SecurityRule("L28", "AA1", None,"==", 0))
-        lg20.security_rules.append(SecurityRule("L29", "AA2", None,"==", 0))
-        lg20.security_rules.append(SecurityRule("L30", "AA3", None,"==", 0))
-        lg20.security_rules.append(SecurityRule("L31", "AA4", None,"==", 0))
-        lg20.security_rules.append(SecurityRule("L32", "AA5", None,"==", 0))
-        lg20.security_rules.append(SecurityRule("L33", "AA6", None,"==", 0))
-        lg20.security_rules.append(SecurityRule("L34", "AA7", None,"==", 0))
-        lg20.security_rules.append(SecurityRule("L35", "AA8", None,"==", 0))
-        lg20.security_rules.append(SecurityRule("L36", "AA9", None,"==", 0))
-        lg21.security_rules.append(SecurityRule("L37", None, "SL1","==", 0))
-
-        GlobalSecurityRules.add_security_group(lg19)
-        GlobalSecurityRules.add_security_group(lg20)
-        GlobalSecurityRules.add_security_group(lg21)
 
     if Constants.NODE_NAME == "n_c":
 
+        
         # Actuadores de Temperatura
         at1 = RelayActuator("AT1", "1", 2)
         at2 = RelayActuator("AT2", "2", 0)
@@ -274,18 +216,69 @@ def init():
         GlobalSecurityRules.add_security_group(lg17)
         GlobalSecurityRules.add_security_group(lg18)
         
+
+        
+        
     if Constants.NODE_NAME == "n_d":
 
-        # Actuadores Electorvalvula de Seguridad
-        ae2 = RelayActuator("AE2", None, 15)
 
-        # Sensores de Nivel de Agua
-        sl2 = WaterLevelSensor("SL2", None, [17,16,4,0])
+        # Actuadores de Bombas para Sistema de muestreo
+        ae10 = RelayActuator("AE10", "1", 33)
+        ae11 = RelayActuator("AE11", "1", 15)
+        ae12 = RelayActuator("AE12", "2", 2)
+        ae13 = RelayActuator("AE13", "3", 0)
+        ae14 = RelayActuator("AE14", "4", 4)
+        ae15 = RelayActuator("AE15", "5", 21)
+        ae16 = RelayActuator("AE16", "6", 22)
+        ae17 = RelayActuator("AE17", "7", 23)
+        ae18 = RelayActuator("AE18", "8", 25)
+        ae19 = RelayActuator("AE19", "9", 32)
 
-        ae2.set_state(1) # Se puede hacer que cuando el nodo este registrado se ponga en 1, pero si no esta registrado 0
+        ae10.set_state(0)
+        ae11.set_state(0)
+        ae12.set_state(0)
+        ae13.set_state(0)
+        ae14.set_state(0)
+        ae15.set_state(0)
+        ae16.set_state(0)
+        ae17.set_state(0)
+        ae18.set_state(0)
+        ae19.set_state(0)
 
-        sensors.append(sl2)
-        actuators.append(ae2)
+        sta1 = TemperatureSensor("STA1", "*", 4, "COMPLETAR")
+        stw10 = TemperatureSensor("STW10", "*", 4, "COMPLETAR")
+        
+        # Sensores de Oxigeno y PH
+        so1 = OxygenSensor("SO1", "*", 0)
+        sph1 = PhSensor("SPH1", "*", 2)
+        sc1 = ConductivitySensor("SC1", "*", 2)
+
+        sensors.append(so1)
+        sensors.append(sph1)
+        sensors.append(sc1)
+        sensors.append(stw10)
+        sensors.append(sta1)
+
+        actuators.append(ae10)
+        actuators.append(ae11)
+        actuators.append(ae12)
+        actuators.append(ae13)
+        actuators.append(ae14)
+        actuators.append(ae15)
+        actuators.append(ae16)
+        actuators.append(ae17)
+        actuators.append(ae18)
+        actuators.append(ae19)
+
+        sampler = Sampler([
+            ae11, ae12, ae13, ae14, ae15, ae16, ae17, ae18, ae19
+        ],
+        ae10,
+        so1,
+        sph1,
+        sc1,
+        stw10
+        )
 
 
     GlobalSecurityRules.start()

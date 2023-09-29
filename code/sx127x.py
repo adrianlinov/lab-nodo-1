@@ -73,8 +73,8 @@ class SX127x:
         
     def __init__(self,
                 name = 'SX127x',
-                parameters = {'frequency': 434E6, 'tx_power_level': 5, 'signal_bandwidth': 125E3,
-                            'spreading_factor': 9, 'coding_rate': 5, 'preamble_length': 8,
+                parameters = {'frequency': 434E6, 'tx_power_level': 13, 'signal_bandwidth': 125E3,
+                            'spreading_factor': 8, 'coding_rate': 5, 'preamble_length': 8,
                             'implicitHeader': False, 'sync_word': 0x12, 'enable_CRC': True},
                 onReceive = None):
 
