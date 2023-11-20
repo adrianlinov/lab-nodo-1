@@ -11,7 +11,7 @@ class SecurityRule:
         self.conditional_value = conditional_value
 
     def is_violated(self):
-        if self.input_actuator_id is not None:
+        if self.input_actuator_id is not None and self.input_actuator_id != "":
             if self.conditional == ">":
                 if Node.get_actuator(self.input_actuator_id).read() > self.conditional_value:
                     return True
@@ -47,11 +47,11 @@ class SecurityRule:
                     return False
 
             else:
-                print("Invalid conditional")
+                # print("Invalid conditional")
                 return None
 
 
-        elif self.input_sensor_id is not None:
+        elif self.input_sensor_id is not None and self.input_sensor_id != "":
             if self.conditional == ">":
                 if Node.get_sensor(self.input_sensor_id).read() > self.conditional_value:
                     return True
@@ -87,5 +87,5 @@ class SecurityRule:
                     return False
 
             else:
-                print("Invalid conditional")
+                # print("Invalid conditional")
                 return None

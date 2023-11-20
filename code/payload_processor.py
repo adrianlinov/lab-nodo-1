@@ -3,24 +3,30 @@ import _thread
 import payload_manager as PayloadManager
 from payload import Payload
 import components.node as Node
+import machine
 
+payload_p_id_processing_no_repeate = []
 
 def process_payload(payload):
     """
     Ejecuta el procesamiento de un payload recibido
     """
-    if payload.action == "read":
-        return _process_read(payload)
+    if len(payload_p_id_processing_no_repeate) > 10:
+        payload_p_id_processing_no_repeate.remove(payload_p_id_processing_no_repeate[0])
+    if payload.p_id not in payload_p_id_processing_no_repeate:
+        payload_p_id_processing_no_repeate.append(payload.p_id)
+        if payload.action == "read":
+            return _process_read(payload)
 
-    if payload.action == "read_all":
-        return _process_read_all(payload)
+        if payload.action == "read_all":
+            return _process_read_all(payload)
 
-    if payload.action == "set_state":
-        return _process_set_state(payload)
-            
-    if payload.action == "ping":
-        return _process_ping(payload)
-        # Enviar los datos solicitados
+        if payload.action == "set_state":
+            return _process_set_state(payload)
+                
+        if payload.action == "ping":
+            return _process_ping(payload)
+            # Enviar los datos solicitados
 
 def _process_read(payload):
     response_payload = Payload()
@@ -71,9 +77,16 @@ def _process_set_state(payload):
     response_payload.action = "set_state_res"
     response_payload.receiver = payload.sender
     response_payload.data["a"] = {}
-    if "a" in payload.data.keys():
+    if "a" in payload.data.keys(): 
         if payload.data["a"] != None and len(payload.data["a"]) > 0:
             for actuator_id in payload.data["a"].keys():
-                response_payload.data["a"][actuator_id] = Node.set_actuator_state(actuator_id, payload.data["a"][actuator_id])
+                # if actuator_id in ["AE2"]:
+                #     response_payload.data["a"][actuator_id] = Node.set_actuator_state(actuator_id, payload.data["a"][actuator_id], validate_rule=False)
+                # else:
+                #     response_payload.data["a"][actuator_id] = 1.123
+                response_payload.data["a"][actuator_id] = Node.set_actuator_state(actuator_id, payload.data["a"][actuator_id], validate_rule=False)
+    # machine.Pin(14).value(0)
+    # time.sleep(1)
+    # machine.Pin(14).value(1)
     return response_payload
 

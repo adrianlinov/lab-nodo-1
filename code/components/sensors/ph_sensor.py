@@ -4,10 +4,10 @@ import time
 
 class PhSensor(Sensor):
     
-    def __init__(self, id, pool, uart_id):
-        super().__init__(id, pool)
+    def __init__(self, id, pool, uart_id=1, tx=None, rx=None, hidden=True):
+        super().__init__(id, pool, hidden=hidden)
         # USAR UART2
-        self.serial = UART(uart_id, 9600)
+        self.serial = UART(uart_id, baudrate=9600, tx=tx, rx=rx)
         self.last_value = None
             
     def read(self):
@@ -30,6 +30,7 @@ class PhSensor(Sensor):
         except:
             self.serial.read()
             return None
+        
     def _sleep(self):
         try:
             self.serial.read()
@@ -39,3 +40,14 @@ class PhSensor(Sensor):
         except:
             self.serial.read()
             return None
+        
+    def send_command(self, command):
+        try:
+            self.serial.read()
+            self.serial.write(command+"\r")
+            time.sleep(1)
+            return self.serial.read().decode("utf-8").split("\r")[0]
+        except:
+            self.serial.read()
+            return None
+        

@@ -37,7 +37,6 @@ class Payload:
             "r": self.receiver,
             "a": self.action,
             "p": self.priority,
-            "ts": "ts",
             "d": self.data,
             "p_id": self.p_id
         }
@@ -64,17 +63,17 @@ class Payload:
         return response_payload
 
     def to_json(self):
-        return json.dumps(self.to_dic()).replace(" ", '')
+        return json.dumps(self.to_dic()).replace(" ", '').replace("null", "0")
         
     def to_json_with_checksum(self):
-        return self.to_json().replace(" ", '') + "-" + str(sum(bytearray(self.to_json(),'utf8')))
+        return self.to_json().replace(" ", '').replace("null", "0") + "-" + str(sum(bytearray(self.to_json(),'utf8'))).replace("null", "0")
 
     def print(self):
         if self.action == "ack_1":
-            print(f"{self.sender} -> {self.receiver}: ID: {self.p_id} ACTION: {self.action} OF: {self.data['ack_1']}")
+            print(f"{self.sender} -> {self.receiver}: ID: {self.p_id} ACTION: {self.action} LEN:{len(self.to_json_with_checksum())} OF: {self.data['ack_1']}")
 
         if self.action == "ack_2":
-            print(f"{self.sender} -> {self.receiver}: ID: {self.p_id} ACTION: {self.action} OF: {self.data['ack_2']}")
+            print(f"{self.sender} -> {self.receiver}: ID: {self.p_id} ACTION: {self.action} LEN:{len(self.to_json_with_checksum())}  OF: {self.data['ack_2']}")
         
         else:
-            print(f"{self.sender} -> {self.receiver}: ID: {self.p_id} ACTION: {self.action}")
+            print(f"{self.sender} -> {self.receiver}: ID: {self.p_id} ACTION: {self.action} LEN:{len(self.to_json_with_checksum())} ")

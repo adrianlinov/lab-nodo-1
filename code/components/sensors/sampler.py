@@ -1,3 +1,4 @@
+import sys
 import time
 
 from components.sensor import Sensor
@@ -5,7 +6,8 @@ from components.sensor import Sensor
 
 class Sampler(Sensor):
 
-    def __init__(self, tank_valves, release_valve, oxygen_sensor, ph_sensor, conductivity_sensor, temperature_sensor):
+    def __init__(self, id, tank_valves, release_valve, oxygen_sensor, ph_sensor, conductivity_sensor, temperature_sensor=None, hidden=False):
+        super().__init__(id, None, hidden=hidden)
         self.tank_valves = tank_valves
         self.oxygen_sensor = oxygen_sensor
         self.ph_sensor = ph_sensor
@@ -16,19 +18,26 @@ class Sampler(Sensor):
     def read_from_tank(self, tank_number):
         '''Lee el valor de un tanque'''
         try:
-            self.tank_valves[tank_number + 1].set_state(True)
-            time.sleep(1) # TODO Establecer tiempo de llenado
-            self.tank_valves[tank_number + 1].set_state(False)
+            index = tank_number-1
+            self.tank_valves[index].set_state(True)
+            self.release_valve.set_state(True)
+            time.sleep(30)
+            self.release_valve.set_state(False)
+            time.sleep(100)
+            print("== INICIO LECTURA ==")
             o2 = self.oxygen_sensor.read()
+            print("O2: "+ str(o2))
             ph = self.ph_sensor.read()
             cond = self.conductivity_sensor.read()
+            print("cond: "+ str(cond))
             temp = self.temperature_sensor.read()
-            self.release_valve.set_state(True)
-            time.sleep(1) # TODO Establecer tiempo de desfogue
+            print("temp: "+ str(temp))
+            self.tank_valves[index].set_state(False)
             self.release_valve.set_state(False)
+            time.sleep(40)
             return str(o2)+ "-" + str(ph) + "-" + str(cond) + "-" + str(temp)
         except Exception as e:
-            print(e)
+            sys.print_exception(e)
             return False
     def read(self):
         '''Lee el valor del sensor'''
@@ -36,22 +45,50 @@ class Sampler(Sensor):
         
     def read_all(self):
         '''Lee el valor de un tanque'''
-        results = []
-        for tank_number in range(9):
+        results = {
+            "SO1" : {},
+            "SPH1" : {},
+            "SC1" : {},
+            "STW10" : {},
+        }
+        for tank_number in range(1,10):
+            # const = 10
+            const = 1
+            index = tank_number-1
+            # Desfoga el agua del sistema
+            self.release_valve.set_state(True)
+            time.sleep(4 * const)
+            # Limpia el agua de la manguera
+            self.tank_valves[index].set_state(True)
+            self.release_valve.set_state(True)
+            time.sleep(3 * const)
+            # Llena el sistema de agua
+            self.release_valve.set_state(False)
+            time.sleep(9 * const)
             try:
-                self.tank_valves[tank_number + 1].set_state(True)
-                time.sleep(1)
-                self.tank_valves[tank_number + 1].set_state(False)
-                time.sleep(1)
-                o2 = self.oxygen_sensor.read()
-                ph = self.ph_sensor.read()
-                cond = self.conductivity_sensor.read()
-                temp = self.temperature_sensor.read()
-                self.release_valve.set_state(True)
-                time.sleep(1)
-                self.release_valve.set_state(False)
-                results.append(str(o2)+ "-" + str(ph) + "-" + str(cond) + "-" + str(temp))
+                o2 = self.oxygen_sensor.read() 
             except Exception as e:
-                print(e)
-                return False
+                sys.print_exception(e) 
+                o2 = None
+            try:
+                ph = self.ph_sensor.read()
+            except Exception as e:
+                sys.print_exception(e) 
+                ph = None
+            try:
+                cond = self.conductivity_sensor.read()
+            except Exception as e:
+                sys.print_exception(e) 
+                cond = None
+            try:
+                temp = self.temperature_sensor.read()
+            except Exception as e:
+                sys.print_exception(e) 
+                temp = None
+            time.sleep(1)
+            results["SO1"][f"{tank_number}"] = o2
+            results["SPH1"][f"{tank_number}"] = ph
+            results["SC1"][f"{tank_number}"] = cond
+            results["STW10"][f"{tank_number}"] = temp
+            self.tank_valves[index].set_state(False)
         return results

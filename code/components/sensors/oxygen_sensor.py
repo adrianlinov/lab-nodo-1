@@ -4,10 +4,10 @@ import time
 
 class OxygenSensor(Sensor):
     
-    def __init__(self, id, pool, uart_id):
-        super().__init__(id, pool)
+    def __init__(self, id, pool, uart_id=1, tx=None, rx=None, hidden=True):
+        super().__init__(id, pool, hidden=hidden)
         # USAR UART2
-        self.serial = UART(uart_id, 9600)
+        self.serial = UART(uart_id, baudrate=9600, tx=tx, rx=rx)
         self.last_value = None
         
     def read(self):

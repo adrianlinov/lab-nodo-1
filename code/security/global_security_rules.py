@@ -38,7 +38,6 @@ def security_loop():
     try:
         while True:
             if Node.registered_by_gateway == True:
-                print("Checking security rules")
                 for group in security_groups:
                     group.is_violated()
                     if group.violated == False:

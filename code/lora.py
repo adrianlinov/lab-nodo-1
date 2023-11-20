@@ -3,6 +3,33 @@ import config_lora
 from sx127x import SX127x
 from controller_esp32 import ESP32Controller
 import _thread
+import time
+import machine
+
+
+start_time = None
+last_message = None
+
+def reset_loop():
+	global start_time
+	global last_message
+	while True:
+		try:
+			time.sleep(1)
+			# FALTA GUARDAR LOS DEMAS PAYLOADS [READ, READ_RES, SET_STATE, SET_STATE_RES]
+			if start_time != None:
+				print("Tiempo Para Reinicio: " + str(time.ticks_ms() - start_time))
+				if time.ticks_ms() - start_time > 10000:
+					f = open('/data.txt', 'w')
+					f.write(f"{last_message}/n")
+					f.close()
+					print("PAYLOAD GUARDADO")
+					time.sleep(3)
+					machine.reset()
+		except:
+			continue
+
+
 class LoRa:
 
 	#Iniciamos el objeto de lora de acuerdo a los pines establecidos para las placas
@@ -15,6 +42,7 @@ class LoRa:
 		self.period = float(period)
 		self.status = 1
 		self.cb = None
+		_thread.start_new_thread(reset_loop,())
 
 		self.controller = ESP32Controller()
 		self.lora = self.controller.add_transceiver(SX127x(name = 'LoRa'),
@@ -35,12 +63,19 @@ class LoRa:
 	#permite enviar un dato con el header especificado en la construccion del objeto
 	#o con un header distinto
 	def send(self, data, spheader=None):
+		global start_time
+		global last_message
+		last_message = data
+		start_time = time.ticks_ms()
+
 		if spheader is not None:
 			self.lora.println(str(spheader)+'@'+str(data))
 		elif self.header is not None:
 			self.lora.println(str(self.header)+'@'+str(data))
 		else:
 			self.lora.println(str(data))
+		start_time = None
+		
 
 	#metodo para escuchar algun mensaje y ejecutar el callback
 	def wait_msg(self):

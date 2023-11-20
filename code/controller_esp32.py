@@ -1,5 +1,12 @@
 from machine import Pin, SoftSPI, reset
 from controller import Controller
+import utime
+import _thread
+import time
+
+
+
+
 
 
 class ESP32Controller(Controller):
@@ -38,6 +45,8 @@ class ESP32Controller(Controller):
                          on_board_led_high_is_on,
                          pin_id_reset,
                          blink_on_start)
+        
+        
 
 
     def prepare_pin(self, pin_id, in_out = Pin.OUT):
@@ -85,17 +94,18 @@ class ESP32Controller(Controller):
 
 
     def prepare_spi(self, spi):
-
+        
         if spi:
             new_spi = Controller.Mock()
 
             def transfer(pin_ss, address, value = 0x00):
+                global start_time
                 response = bytearray(1)
-
+                start_time = time.ticks_ms()
                 pin_ss.low()
-
                 spi.write(bytes([address]))
                 spi.write_readinto(bytes([value]), response)
+                start_time = None
 
                 pin_ss.high()
 

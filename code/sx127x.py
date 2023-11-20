@@ -74,7 +74,7 @@ class SX127x:
     def __init__(self,
                 name = 'SX127x',
                 parameters = {'frequency': 434E6, 'tx_power_level': 13, 'signal_bandwidth': 125E3,
-                            'spreading_factor': 8, 'coding_rate': 5, 'preamble_length': 8,
+                            'spreading_factor': 10, 'coding_rate': 5, 'preamble_length': 8,
                             'implicitHeader': False, 'sync_word': 0x12, 'enable_CRC': True},
                 onReceive = None):
 
@@ -179,9 +179,11 @@ class SX127x:
 
     def println(self, string, implicitHeader = False):
         self.aquire_lock(True)  # wait until RX_Done, lock and begin writing.
-
+    
         self.beginPacket(implicitHeader)
+        # AQUI SE PARA EL CODIGO
         self.write(string.encode())
+        # AQUI SE PARA EL CODIGO
         self.endPacket()
 
         self.aquire_lock(False) # unlock when done writing

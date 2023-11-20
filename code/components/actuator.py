@@ -3,12 +3,13 @@ from components.peripheral import Peripheral
 
 class Actuator(Peripheral):
 
-    def __init__(self, id_actuator, pool):
-        self.id = id_actuator
+    def __init__(self, id, pool, hidden):
+        self.id = id
+        self.hidden = hidden
         super().__init__(pool)
 
 
-    def set_state(self, newState):
+    def set_state(self, newState, validate_rule):
         pass
 
     def read(self):
