@@ -498,6 +498,7 @@ class LoRaTransceiver:
                     available_to_rx = False
                     payload.print()
                     print(payload.to_json_with_checksum())
+                    time.sleep(1)
                     print("INICIO ENVIO")
                     self.send_message(payload.to_json_with_checksum())
                     print("FIN ENVIO")

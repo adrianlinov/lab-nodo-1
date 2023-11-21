@@ -5,6 +5,8 @@ from controller_esp32 import ESP32Controller
 import _thread
 import time
 import machine
+from payload_manager import tx_waiting_ack1
+import utils
 
 
 start_time = None
@@ -13,19 +15,15 @@ last_message = None
 def reset_loop():
 	global start_time
 	global last_message
+	global tx_waiting_ack1
 	while True:
 		try:
 			time.sleep(1)
 			# FALTA GUARDAR LOS DEMAS PAYLOADS [READ, READ_RES, SET_STATE, SET_STATE_RES]
 			if start_time != None:
 				print("Tiempo Para Reinicio: " + str(time.ticks_ms() - start_time))
-				if time.ticks_ms() - start_time > 10000:
-					f = open('/data.txt', 'w')
-					f.write(f"{last_message}/n")
-					f.close()
-					print("PAYLOAD GUARDADO")
-					time.sleep(3)
-					machine.reset()
+				if time.ticks_ms() - start_time > 20000:
+					utils.save_restart(last_message)
 		except:
 			continue
 

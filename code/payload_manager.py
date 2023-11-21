@@ -36,7 +36,6 @@ def start():
                     send_payload(payload)
             os.remove("/data.txt")
     except Exception as e:
-        sys.print_exception(e)
         pass
     contador = 0
     while True:
@@ -84,6 +83,9 @@ def payload_waiting_ack1_loop():
             payload.tx_payload_send_count += 1
             if payload.tx_payload_send_count > 3:
                 payload.priority = 1
+            if payload.tx_payload_send_count > 100:
+                # SAVE AND RESTART
+                pass
             send_payload(payload)
             time.sleep(random.randint(1, 3) * 2)
 
