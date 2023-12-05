@@ -14,13 +14,13 @@ def _get_node_name():
     
 
 NODE_NAME = _get_node_name()
-NODE_ID = str(uuid.uuid4())[:8]
+node_id = str(uuid.uuid4())[:8]
 
-NODE_ID_PREV = None
+node_id_prev = None
 
 
 start_time = None
 
 def reset_id():
-    global NODE_ID
-    NODE_ID = str(uuid.uuid4())[:8]
+    global node_id
+    node_id = str(uuid.uuid4())[:8]

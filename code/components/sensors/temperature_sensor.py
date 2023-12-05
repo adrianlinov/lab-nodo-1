@@ -1,31 +1,30 @@
 import sys
 from components.sensor import Sensor
-import machine, onewire, ds18x20, time
+import machine, onewire_new, time
+import ds18x20_new as ds18x20_new
+from logger import logger
 
 class TemperatureSensor(Sensor):
     
     def __init__(self, id, pool, pin_number, identifier, hidden=False):
         super().__init__(id, pool, hidden=hidden)
-        self.sensor = ds18x20.DS18X20(onewire.OneWire(machine.Pin(pin_number)))
+        self.sensor = ds18x20_new.DS18X20(onewire_new.OneWire(machine.Pin(pin_number)))
         self.roms = self.sensor.scan()
         self.rom = None
         for rom in self.roms:
-            print(''.join('{:02x}'.format(byte) for byte in rom))
-        print("======")
-        for rom in self.roms:
-            print(''.join('{:02x}'.format(byte) for byte in rom))
             if ''.join('{:02x}'.format(byte) for byte in rom) == identifier:
                 self.rom = rom
-                print("sensor identificado")
+                print(f"sensor identificado: {identifier}")
                 break
         if self.rom == None:
-            print("No se encontro" + str(identifier))
+            logger.log("No se encontro el sensor: " + str(identifier))
             machine.reset()
         self.last_value = None
         
     def read(self):
         '''Lee el valor del sensor'''
         contador = 0
+        # IMPLEMENTAR https://github.com/robert-hh/Onewire_DS18X20/tree/master
         while contador < 10:
             try:
                 self.sensor.convert_temp()
@@ -36,9 +35,9 @@ class TemperatureSensor(Sensor):
                 else:
                     return res
             except Exception as e:
-                sys.print_exception(e)
+                logger.logException(e)
                 contador = contador + 1
-        
+                continue
         return 0.0
                 
 

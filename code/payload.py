@@ -1,6 +1,8 @@
 import json
 import uuid
 import constants
+import machine
+from logger import logger
 
 class Payload:
     # JSON as string to be parsed
@@ -27,7 +29,7 @@ class Payload:
             self.rx_ack1_count = 0
             self.tx_last_ack1_time = None
             self.priority = 2
-            self.sender = constants.NODE_ID
+            self.sender = constants.node_id
             self.p_id = str(uuid.uuid4())[:8]
             self.data = {}
 
@@ -46,6 +48,11 @@ class Payload:
         response_payload = Payload()
         if self.rx_ack1_count > 3:
             response_payload.priority = 1
+        if self.rx_ack1_count > 30:
+            response_payload.priority = 0
+        if self.rx_ack1_count > 100:
+            machine.reset()
+            # utils.remove_prev_name
         response_payload.receiver = self.sender
         response_payload.action = "ack_1"
         response_payload.data["ack_1"] = self.p_id
@@ -56,7 +63,13 @@ class Payload:
         self.tx_ack1_count += 1
         if self.tx_ack1_count > 3:
             response_payload.priority = 1            
+        if self.tx_ack1_count > 30:
+            response_payload.priority = 0            
+        if self.tx_ack1_count > 100:
+            machine.reset()
+
         response_payload = Payload()
+        response_payload.sender = self.sender
         response_payload.receiver = self.receiver
         response_payload.action = "ack_2"
         response_payload.data["ack_2"] = self.p_id
@@ -70,10 +83,12 @@ class Payload:
 
     def print(self):
         if self.action == "ack_1":
-            print(f"{self.sender} -> {self.receiver}: ID: {self.p_id} ACTION: {self.action} LEN:{len(self.to_json_with_checksum())} OF: {self.data['ack_1']}")
+            logger.log(f"{self.sender} -> {self.receiver}: ID: {self.p_id} ACTION: {self.action} OF: {self.data['ack_1']} LEN:{len(self.to_json_with_checksum())} RTY:{self.rx_ack1_count}")
+            print(f"{self.sender} -> {self.receiver}: ID: {self.p_id} ACTION: {self.action} OF: {self.data['ack_1']} LEN:{len(self.to_json_with_checksum())} RTY:{self.rx_ack1_count}")
 
         if self.action == "ack_2":
-            print(f"{self.sender} -> {self.receiver}: ID: {self.p_id} ACTION: {self.action} LEN:{len(self.to_json_with_checksum())}  OF: {self.data['ack_2']}")
-        
+            logger.log(f"{self.sender} -> {self.receiver}: ID: {self.p_id} ACTION: {self.action} OF: {self.data['ack_2']} LEN:{len(self.to_json_with_checksum())} RTY:{self.tx_ack1_count}")
+            print(f"{self.sender} -> {self.receiver}: ID: {self.p_id} ACTION: {self.action} OF: {self.data['ack_2']} LEN:{len(self.to_json_with_checksum())} RTY:{self.tx_ack1_count}")
         else:
-            print(f"{self.sender} -> {self.receiver}: ID: {self.p_id} ACTION: {self.action} LEN:{len(self.to_json_with_checksum())} ")
+            logger.log(f"{self.sender} -> {self.receiver}: ID: {self.p_id} ACTION: {self.action} LEN:{len(self.to_json_with_checksum())} RTY:{self.rx_ack1_count}")
+            print(f"{self.sender} -> {self.receiver}: ID: {self.p_id} ACTION: {self.action} LEN:{len(self.to_json_with_checksum())} RTY:{self.rx_ack1_count}")

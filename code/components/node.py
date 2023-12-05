@@ -43,7 +43,7 @@ def init():
         ae3 = RelayActuator("AE3", "3", 0, flowmeter_pin=34)    # AZUL
         ae4 = RelayActuator("AE4", "4", 13, flowmeter_pin=35)   # BLANCO
         ae5 = RelayActuator("AE5", "5", 21, flowmeter_pin=15)   # VERDE
-        ae6 = RelayActuator("AE6", "6", 17, flowmeter_pin=2)   # NARANJA
+        ae6 = RelayActuator("AE6", "6", 17, flowmeter_pin=12)   # NARANJA
         ae7 = RelayActuator("AE7", "7", 23,flowmeter_pin= 3)  # ROJO
         ae8 = RelayActuator("AE8", "8", 1, flowmeter_pin=10)  # NEGRO
         ae9 = RelayActuator("AE9", "9", 4, flowmeter_pin=25)   # TIRRA
@@ -95,11 +95,11 @@ def init():
 
 
         # Sensores de Temperatura de Agua
-        stw1 = TemperatureSensor("STW1", "1", 16, "282d925704053cf4")
+        stw1 = TemperatureSensor("STW1", "1", 16, "283dd45704a13c0f") # CAMBIADO CON STW5 
         stw2 = TemperatureSensor("STW2", "2", 16, "28111a5704433ca0")
         stw3 = TemperatureSensor("STW3", "3", 16, "28338b5704cc3c35")
         stw4 = TemperatureSensor("STW4", "4", 16, "28ebc65704f13cf1")
-        stw5 = TemperatureSensor("STW5", "5", 16, "283dd45704a13c0f")
+        stw5 = TemperatureSensor("STW5", "5", 16, "282d925704053cf4")
         stw6 = TemperatureSensor("STW6", "6", 16, "286f1d76e0013cd6")
         stw7 = TemperatureSensor("STW7", "7", 16, "28a2715704103cbd")
         stw8 = TemperatureSensor("STW8", "8", 16, "28ea6657044a3cd4")
@@ -203,7 +203,7 @@ def init():
         # ae18 = RelayActuator("AE18", "8", 1, hidden=True) # NEGRO
         # ae19 = RelayActuator("AE19", "9", 4, hidden=True) # TIRRA
 
-        ae10 = RelayActuator("AE10", "*", 2, hidden=True) # AMARILLO CHECK
+        ae10 = RelayActuator("AE10", "*", 1, hidden=True) # AMARILLO CHECK
         ae11 = RelayActuator("AE11", "1", 16, hidden=True) # AMARILLO CHECK
         ae12 = RelayActuator("AE12", "2", 17, hidden=True)  # MARRON CHECK
         ae13 = RelayActuator("AE13", "3", 4, hidden=True)  # AZUL  Se reinicia el Nodo al apagar relay
@@ -212,7 +212,7 @@ def init():
         ae16 = RelayActuator("AE16", "6", 32, hidden=True) # NARANJA CHECK 
         ae17 = RelayActuator("AE17", "7", 23, hidden=True) # ROJO CUENTA SOLO CON RELAY
         ae18 = RelayActuator("AE18", "8", 15, hidden=True) # NEGRO
-        ae19 = RelayActuator("AE19", "9", 12, hidden=True) # TIRRA
+        ae19 = RelayActuator("AE19", "9", 15, hidden=True) # TIRRA
 
         ae10.set_state(0)
         ae11.set_state(0)
@@ -269,20 +269,22 @@ def init():
 
     # GlobalSecurityRules.start()
     
-def register_in_network():
+def register_in_network(new_id=True):
     global registered_by_gateway
-    registered_by_gateway = False
-    payload = Payload()
-    payload.receiver = "gw"
-    payload.action = "register"
-    payload.data["n_n"] = Constants.NODE_NAME
-    payload.data["n_id"] = Constants.NODE_ID
     init()
+    if new_id:
+        registered_by_gateway = False
+        payload = Payload()
+        payload.receiver = "gw"
+        payload.action = "register"
+        payload.data["n_n"] = Constants.NODE_NAME
+        payload.data["n_id"] = Constants.node_id
+        
 
-    payload.data["s"] = list(map(lambda x: x.get_id(), get_sensor_list()))
-    payload.data["a"] = list(map(lambda x: x.get_id(), get_actuator_list()))
-    
-    PayloadManager.send_payload(payload)
+        payload.data["s"] = list(map(lambda x: x.get_id(), get_sensor_list()))
+        payload.data["a"] = list(map(lambda x: x.get_id(), get_actuator_list()))
+        
+        PayloadManager.send_payload(payload)
 
 def get_sensor(sensor_id):
     for sensor in sensors:

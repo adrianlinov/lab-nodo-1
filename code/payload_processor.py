@@ -11,7 +11,7 @@ def process_payload(payload):
     """
     Ejecuta el procesamiento de un payload recibido
     """
-    if len(payload_p_id_processing_no_repeate) > 10:
+    if len(payload_p_id_processing_no_repeate) > 20:
         payload_p_id_processing_no_repeate.remove(payload_p_id_processing_no_repeate[0])
     if payload.p_id not in payload_p_id_processing_no_repeate:
         payload_p_id_processing_no_repeate.append(payload.p_id)

@@ -1,7 +1,8 @@
 import _thread
 import sys
 
-import components.node as Node
+# import components.node as Node
+from logger import logger
 
 security_groups = []
 
@@ -35,9 +36,10 @@ def validate_actuator_security_rules(id_actuator):
 
 
 def security_loop():
-    try:
-        while True:
-            if Node.registered_by_gateway == True:
+    while True:
+        try:
+            # if Node.registered_by_gateway == True:
+            if True == True:
                 for group in security_groups:
                     group.is_violated()
                     if group.violated == False:
@@ -49,7 +51,8 @@ def security_loop():
                         if group.is_violated() == False:
                             pass
                             # avisar al gateway
-    except Exception as e:
-        sys.print_exception(e)
+        except Exception as e:
+            logger.logException(e)
+            continue
         
 

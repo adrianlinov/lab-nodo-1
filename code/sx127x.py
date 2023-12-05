@@ -1,4 +1,5 @@
 from time import sleep
+import time
 import gc
 
 PA_OUTPUT_RFO_PIN = 0
@@ -148,19 +149,22 @@ class SX127x:
         self.writeRegister(REG_OP_MODE, MODE_LONG_RANGE_MODE | MODE_TX)
 
         # wait for TX done, standby automatically on TX_DONE
+        start = time.ticks_ms()
         while (self.readRegister(REG_IRQ_FLAGS) & IRQ_TX_DONE_MASK) == 0:
-            pass
+            if (time.ticks_ms() - start > 4000):
+                print("Timeout LoRa Exit")
+                break
+        start = None
 
         # clear IRQ's
         self.writeRegister(REG_IRQ_FLAGS, IRQ_TX_DONE_MASK)
-
         self.collect_garbage()
 
 
     def write(self, buffer):
         currentLength = self.readRegister(REG_PAYLOAD_LENGTH)
         size = len(buffer)
-
+        
         # check size
         size = min(size, (MAX_PKT_LENGTH - FifoTxBaseAddr - currentLength))
 
@@ -181,11 +185,9 @@ class SX127x:
         self.aquire_lock(True)  # wait until RX_Done, lock and begin writing.
     
         self.beginPacket(implicitHeader)
-        # AQUI SE PARA EL CODIGO
         self.write(string.encode())
-        # AQUI SE PARA EL CODIGO
         self.endPacket()
-
+        
         self.aquire_lock(False) # unlock when done writing
 
 

@@ -2,6 +2,7 @@ import sys
 import time
 
 from components.sensor import Sensor
+from logger import logger
 
 
 class Sampler(Sensor):
@@ -37,7 +38,7 @@ class Sampler(Sensor):
             time.sleep(40)
             return str(o2)+ "-" + str(ph) + "-" + str(cond) + "-" + str(temp)
         except Exception as e:
-            sys.print_exception(e)
+            logger.logException(e)
             return False
     def read(self):
         '''Lee el valor del sensor'''
@@ -52,8 +53,8 @@ class Sampler(Sensor):
             "STW10" : {},
         }
         for tank_number in range(1,10):
-            # const = 10
-            const = 1
+            const = 10
+            # const = 1
             index = tank_number-1
             # Desfoga el agua del sistema
             self.release_valve.set_state(True)
@@ -68,22 +69,22 @@ class Sampler(Sensor):
             try:
                 o2 = self.oxygen_sensor.read() 
             except Exception as e:
-                sys.print_exception(e) 
+                logger.logException(e) 
                 o2 = None
             try:
                 ph = self.ph_sensor.read()
             except Exception as e:
-                sys.print_exception(e) 
+                logger.logException(e) 
                 ph = None
             try:
                 cond = self.conductivity_sensor.read()
             except Exception as e:
-                sys.print_exception(e) 
+                logger.logException(e) 
                 cond = None
             try:
                 temp = self.temperature_sensor.read()
             except Exception as e:
-                sys.print_exception(e) 
+                logger.logException(e) 
                 temp = None
             time.sleep(1)
             results["SO1"][f"{tank_number}"] = o2

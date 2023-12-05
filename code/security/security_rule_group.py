@@ -1,6 +1,7 @@
 
 import components.node as Node
 import sys
+from logger import logger
 
 class SecurityRuleGroup:
     def __init__(self, id, id_output_actuator, if_violated_value=None, if_not_violated_value=None, method="all", take_action=True):
@@ -44,7 +45,7 @@ class SecurityRuleGroup:
                         self.violated = False
                     return False
         except Exception as e:
-            sys.print_exception(e)
+            logger.logException(e)
 
 
 
