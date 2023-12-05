@@ -212,7 +212,7 @@ def init():
         ae16 = RelayActuator("AE16", "6", 32, hidden=True) # NARANJA CHECK 
         ae17 = RelayActuator("AE17", "7", 23, hidden=True) # ROJO CUENTA SOLO CON RELAY
         ae18 = RelayActuator("AE18", "8", 15, hidden=True) # NEGRO
-        ae19 = RelayActuator("AE19", "9", 15, hidden=True) # TIRRA
+        ae19 = RelayActuator("AE19", "9", 12, hidden=True) # TIRRA
 
         ae10.set_state(0)
         ae11.set_state(0)
