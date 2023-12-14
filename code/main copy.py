@@ -34,13 +34,14 @@ def try_ds18b20():
         roms = sensor.scan()
         sensor.convert_temp()
         time.sleep_ms(750)
-        # print(roms)
+        # # print(roms)
         for rom in roms:
-            print(''.join('{:02x}'.format(byte) for byte in rom))
-            print(round(sensor.read_temp(rom), 1))
-            # print("")
+            # print(''.join('{:02x}'.format(byte) for byte in rom))
+            # print(round(sensor.read_temp(rom), 1))
+            # # print("")
+            pass
         time.sleep(5)
-        # print("====================================")
+        # # print("====================================")
 
 def try_releys():
     pins = [2, 5, 4, 22, 23, 12, 25, 33, 32]
@@ -48,11 +49,11 @@ def try_releys():
     # Turn pins on for 5 seconds, then off for 5 seconds, repeat.
     
     while True:
-        print("OFF")
+        # print("OFF")
         for p in pm:
             p.off()
         time.sleep(5)
-        print("ON")
+        # print("ON")
         for p in pm:
             p.off()
         time.sleep(5)
@@ -69,7 +70,7 @@ def read():
     while True:
         while (flowing == False):
             time.sleep(0.1)
-            print("Esperando...")
+            # print("Esperando...")
         pulses_inicio = 0
         pulses_actual = 0
         time_inicio = time.time()
@@ -77,7 +78,7 @@ def read():
         while (pulses_actual > prev_pulses):
             prev_pulses = pulses_actual
             time.sleep(0.2)
-            print("Midiendo...")
+            # print("Midiendo...")
 
         flowing = False
         
@@ -100,10 +101,10 @@ def read():
             # Calcular la cantidad total de litros
             litros_total = caudal * time_elapsed
             if time_elapsed > 0:
-                print("Litros por segundo:", caudal)
-                print("Litros por minuto:", litros_por_minuto)
-                print("Litros totales:", litros_total)
-                print("Tiempo transcurrido (s):", time_elapsed)
+                # print("Litros por segundo:", caudal)
+                # print("Litros por minuto:", litros_por_minuto)
+                # print("Litros totales:", litros_total)
+                # print("Tiempo transcurrido (s):", time_elapsed)
                 flowing = False
 
 def read_chatgpt():
@@ -135,10 +136,11 @@ def read_chatgpt():
         litros_total = (pulses_actual / 7.5)
 
         if time_elapsed > 0:
-            print("Caudal (pulsos por segundo):", caudal)
-            print("Litros por minuto:", litros_por_minuto)
-            print("Litros totales:", litros_total)
-            print("Tiempo transcurrido (ms):", time_elapsed)
+            pass
+            # print("Caudal (pulsos por segundo):", caudal)
+            # print("Litros por minuto:", litros_por_minuto)
+            # print("Litros totales:", litros_total)
+            # print("Tiempo transcurrido (ms):", time_elapsed)
             
 def read_caudal():
         machine.Pin(25, machine.Pin.IN).irq(trigger=machine.Pin.IRQ_FALLING, handler=sumar_vuelta)
@@ -154,9 +156,9 @@ def read_caudal():
             time_elapsed = current_time - last_time
             pulsos_por_segundo = (pulses_actual / time_elapsed) * 1000  # Caudal en pulsos por segundo
             caudal = pulsos_por_segundo / (7.5 * 60)  # Caudal en litros por segundo
-            print(caudal)
-            print(pulses_actual)
-            print("===")
+            # print(caudal)
+            # print(pulses_actual)
+            # print("===")
 
 def read_caudal_automatico():
     while True:
@@ -173,10 +175,10 @@ def read_caudal_automatico():
         time_elapsed = current_time - last_time
         pulsos_por_segundo = (pulses_actual / time_elapsed) * 1000.0  # Caudal en pulsos por segundo
         caudal = (pulsos_por_segundo / (7.5 * 60)) * 1.30  # Caudal en litros por segundo
-        print("Caudal (L/s): ", str(caudal))
-        print("Pulsos: ", str(pulses_actual))
-        print("Litros Totales: ", (caudal * time_elapsed / 1000))
-        print("===")
+        # print("Caudal (L/s): ", str(caudal))
+        # print("Pulsos: ", str(pulses_actual))
+        # print("Litros Totales: ", (caudal * time_elapsed / 1000))
+        # print("===")
         time.sleep(10)
 
 def litros_contados():
@@ -184,11 +186,11 @@ def litros_contados():
     while True:
         litros = float(input("Ingresa litros: "))
         time.sleep(1)
-        print("3")
+        # print("3")
         time.sleep(1)
-        print("2")
+        # print("2")
         time.sleep(1)
-        print("1")
+        # print("1")
         time.sleep(1)
         machine.Pin(33, machine.Pin.OUT).value(0)
         global pulses_actual
@@ -204,15 +206,15 @@ def litros_contados():
             pulsos_por_segundo = (pulses_actual / time_elapsed_bucle) * 1000.0  # Caudal en pulsos por segundo
             caudal = (pulsos_por_segundo / (7.5 * 60))
             litros_dispensados += caudal * (time_elapsed_bucle / 1000)
-            print(litros_dispensados)
+            # print(litros_dispensados)
             
             
         machine.Pin(33, machine.Pin.OUT).value(1)
 
         time_elapsed = time.ticks_ms() - time_inicio_general
-        print("Time: ", time_elapsed)        
-        print("Litros Totales: ", litros_dispensados)
-        print("===")
+        # print("Time: ", time_elapsed)        
+        # print("Litros Totales: ", litros_dispensados)
+        # print("===")
 
 def test_sensor_serial(sensor):
     # 35, 32 O2
@@ -235,7 +237,7 @@ def test_sensor_serial(sensor):
         serial.write(f"{comando}\r")
         time.sleep(1)
         response = serial.read().decode("utf-8").split("\r")[0]
-        print(response)
+        # print(response)
 
 def test_flowmeter():
     
@@ -286,7 +288,7 @@ def test_flowmeter():
 
     while True:
         for actuator in actuators:
-            # print(actuator.id)
+            # # print(actuator.id)
             actuator.set_state_flowmetter(1)
             time.sleep(10)
 
@@ -298,21 +300,21 @@ def test_i2c():
             i2c.writeto(0x61, command)
             time.sleep(1)
             response = i2c.readfrom(0x61, 7)
-            print("1: " + response.decode("utf-8")[1:5])
-            print(type(response.decode("utf-8")[1:5]))
-            print(float(response.decode("utf-8")[1:5]))
+            # print("1: " + response.decode("utf-8")[1:5])
+            # print(type(response.decode("utf-8")[1:5]))
+            # print(float(response.decode("utf-8")[1:5]))
             i2c.writeto(0x63, command)
             time.sleep(1)
             response = i2c.readfrom(0x63, 7)
-            print("2: " + response.decode("utf-8")[1:5])
-            print(type(response.decode("utf-8")[1:5]))
-            print(float(response.decode("utf-8")[1:5]))
+            # print("2: " + response.decode("utf-8")[1:5])
+            # print(type(response.decode("utf-8")[1:5]))
+            # print(float(response.decode("utf-8")[1:5]))
             i2c.writeto(0x64, command)
             time.sleep(1)
             response = i2c.readfrom(0x64, 7)
-            print("3: " + response.decode("utf-8")[1:5])
-            print(type(response.decode("utf-8")[1:5]))
-            print(float(response.decode("utf-8")[1:5]))
+            # print("3: " + response.decode("utf-8")[1:5])
+            # print(type(response.decode("utf-8")[1:5]))
+            # print(float(response.decode("utf-8")[1:5]))
             time.sleep(1)
         except Exception as e:
             logger.logException(e)
@@ -455,16 +457,16 @@ class LoRaTransceiver:
         try:
             if sum(bytearray(validate[0],'utf8')) == int(validate[1]):
                 payload_obj = Payload(payload)
-                print(payload)
-                print(payload_obj.receiver)
-                print(constant.node_id)
+                # print(payload)
+                # print(payload_obj.receiver)
+                # print(constant.node_id)
                 if payload_obj.receiver in [constant.node_id, constant.node_id_prev]:
                     return True
                 else:    
-                    print("Error de validacion por ID")
+                    # print("Error de validacion por ID")
                     return False
             else:
-                print("Error de validacion por checksum")
+                # print("Error de validacion por checksum")
                 return False
         except Exception as e:
             # logger.logException(e)
@@ -486,7 +488,7 @@ class LoRaTransceiver:
                 payload.print()
                 PayloadManager.payload_received(payload)
             # else:
-                # print(payload_str)
+                # # print(payload_str)
                 # logger.log("Payload Received: N/A")
         except Exception as e:
             logger.logException(e)
@@ -509,10 +511,10 @@ class LoRaTransceiver:
                 if payload != None:
                     available_to_rx = False
                     payload.print()
-                    print(payload.to_json_with_checksum())
-                    print("INICIO ENVIO")
+                    # print(payload.to_json_with_checksum())
+                    # print("INICIO ENVIO")
                     self.send_message(payload.to_json_with_checksum())
-                    print("FIN ENVIO")
+                    # print("FIN ENVIO")
             except Exception as e:
                 logger.logException(e)
                 continue
@@ -529,22 +531,22 @@ def main():
     while True:
         pass
 # def main2():
-#     print("starting")
+#     # print("starting")
 #     while True:
 #         lora = LoRaTransceiver()
-#         print("starting threads")
+#         # print("starting threads")
 #         _thread.start_new_thread(lora.wait_for_message, ())
 #         _thread.start_new_thread(lora.tx_loop, ())
 #         PayloadManager.start()
 #         while True:
-#             # print(".")
+#             # # print(".")
 #             time.sleep(.5)
 
 
 
 if __name__ == '__main__':
     try:
-        print("started")
+        # print("started")
         time.sleep(5)
 
 

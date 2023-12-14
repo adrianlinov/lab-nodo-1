@@ -84,7 +84,7 @@ class ESP32Controller(Controller):
             #spi.init()
 
         except Exception as e:
-            print(e)
+            # print(e)
             if spi:
                 spi.deinit()
                 spi = None

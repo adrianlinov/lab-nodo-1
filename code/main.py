@@ -27,10 +27,12 @@ def test_i2c():
         try:
             i2c = machine.SoftI2C(scl=machine.Pin(25), sda=machine.Pin(22), freq=100000)
             inpu = input("Ingrese comando: ")
+            # inpu = "R"
             command = inpu.encode('utf-8')
-            i2c.writeto(0x64, command)
+            i2c.writeto(0x63, command)
             time.sleep(1)
-            response = i2c.readfrom(0x64, 7)
+            
+            response = i2c.readfrom(0x63, 8)
             print(response.decode("utf-8"))
             time.sleep(1)
         except Exception as e:
@@ -95,7 +97,7 @@ class LoRaTransceiver:
                 payload.print()
                 PayloadManager.payload_received(payload)
             else:
-                print(payload_str)
+                # print(payload_str)
                 logger.log("Payload Received: N/A")
         except Exception as e:
             logger.logException(e)
@@ -119,10 +121,10 @@ class LoRaTransceiver:
                 if payload != None:
                     # available_to_rx = False
                     payload.print()
-                    print(payload.to_json_with_checksum())
-                    print("INICIO ENVIO")
+                    # print(payload.to_json_with_checksum())
+                    # print("INICIO ENVIO")
                     self.send_message(payload.to_json_with_checksum())
-                    print("FIN ENVIO")
+                    # print("FIN ENVIO")
                     # available_to_rx = True
                     time.sleep(random.randint(2,5) * 2)
             except Exception as e:
@@ -134,14 +136,14 @@ class LoRaTransceiver:
         # global available_to_rx
         global reset
         time_inicio = time.ticks_ms()
-        print("starting LoRa Loop")
+        # print("starting LoRa Loop")
         
         while True:
-            print(utils.free())
-            print(utils.df())
+            # print(utils.free())
+            # print(utils.df())
             if (time.ticks_ms() - time_inicio > 1000 * 60 * 10):
                 break
-            print(time.ticks_ms() - time_inicio)
+            # print(time.ticks_ms() - time_inicio)
             try:
                 # PARTE RECEPCION
                 rx_time = time.ticks_ms()
@@ -156,10 +158,10 @@ class LoRaTransceiver:
                 if payload != None:
                     # available_to_rx = False
                     payload.print()
-                    print(payload.to_json_with_checksum())
-                    print("INICIO ENVIO")
+                    # print(payload.to_json_with_checksum())
+                    # print("INICIO ENVIO")
                     self.send_message(payload.to_json_with_checksum())
-                    print("FIN ENVIO")
+                    # print("FIN ENVIO")
                     # available_to_rx = True
                 # PARTE ENVIO
             except Exception as e:
@@ -169,24 +171,14 @@ class LoRaTransceiver:
             
 def test_flowmeter():
     
-    # ae1 = RelayActuator("AE1", "1", 16, flowmeter_pin=36) # AMARILLO CHECK
-    # ae2 = RelayActuator("AE2", "2", 33, flowmeter_pin=39)  # MARRON CHECK
-    # ae3 = RelayActuator("AE3", "3", 4, flowmeter_pin=34)  # AZUL  Se reinicia el Nodo al apagar relay
-    # ae4 = RelayActuator("AE4", "4", 13, flowmeter_pin=35)  # BLANCO CHECK DA COMO 6L
-    # ae5 = RelayActuator("AE5", "5", 21, flowmeter_pin=15) # VERDE · No usar Pin 12 para FM
-    # ae6 = RelayActuator("AE6", "6", 22, flowmeter_pin=17) # NARANJA CHECK 
-    # ae7 = RelayActuator("AE7", "7", 23,flowmeter_pin= 3) # ROJO CUENTA SOLO CON RELAY
-    # ae8 = RelayActuator("AE8", "8", 1, flowmeter_pin=10) # NEGRO
-    # ae9 = RelayActuator("AE9", "9", 32, flowmeter_pin=25) # TIRRA ORIGINAL PIN 2
-
     ae1 = RelayActuator("AE1", "1", 16, flowmeter_pin=36)   # AMARILLO
     ae2 = RelayActuator("AE2", "2", 33, flowmeter_pin=22)   # MARRON
     ae3 = RelayActuator("AE3", "3", 0, flowmeter_pin=34)    # AZUL
     ae4 = RelayActuator("AE4", "4", 13, flowmeter_pin=35)   # BLANCO
     ae5 = RelayActuator("AE5", "5", 21, flowmeter_pin=15)   # VERDE
     ae6 = RelayActuator("AE6", "6", 17, flowmeter_pin=12)   # NARANJA
-    ae7 = RelayActuator("AE7", "7", 23,flowmeter_pin= 3)  # ROJO
-    ae8 = RelayActuator("AE8", "8", 1, flowmeter_pin=10)  # NEGRO
+    # ae7 = RelayActuator("AE7", "7", 23,flowmeter_pin= 3)  # ROJO
+    # ae8 = RelayActuator("AE8", "8", 1, flowmeter_pin=10)  # NEGRO
     ae9 = RelayActuator("AE9", "9", 4, flowmeter_pin=25)   # TIRRA
     
     # EL CAUDALIMETRO DE 7 RALLAS ES EL 9
@@ -198,26 +190,26 @@ def test_flowmeter():
     ae4.set_state(0)
     ae5.set_state(0)
     ae6.set_state(0)
-    ae7.set_state(0)
-    ae8.set_state(0)
+    # ae7.set_state(0)
+    # ae8.set_state(0)
     ae9.set_state(0)
 
     time.sleep(1)
 
-    actuators.append(ae1)
-    actuators.append(ae2)
-    actuators.append(ae3)
-    actuators.append(ae4)
+    # actuators.append(ae1)
+    # actuators.append(ae2)
+    # actuators.append(ae3)
+    # actuators.append(ae4)
     actuators.append(ae5)
-    actuators.append(ae6)
-    actuators.append(ae7)
-    actuators.append(ae8)
-    actuators.append(ae9)
+    # actuators.append(ae6)
+    # actuators.append(ae7)
+    # actuators.append(ae8)
+    # actuators.append(ae9)
 
     while True:
         for actuator in actuators:
             # print(actuator.id)
-            actuator.set_state_flowmetter(5)
+            actuator.set_state_flowmetter(11.25)
             time.sleep(10)
 
 
@@ -228,7 +220,7 @@ def main():
 
     PayloadManager.start()
     while True:
-        print("starting LoRa")
+        # print("starting LoRa")
         lora = LoRaTransceiver()
         
         # _thread.start_new_thread(lora.lora_loop, ())
@@ -237,11 +229,11 @@ def main():
         lora.lora_loop()
         # while 1000 * 60 * 5 < (time.ticks_ms - time_inicio):
         #     time.sleep(1)
-        #     print(".")
+        #     # print(".")
         # reset = True
         # available_to_rx = False
         
-        print("Reset Lora")
+        # print("Reset Lora")
         time.sleep(10)
         reset = False
 
@@ -249,7 +241,7 @@ def main():
 
 if __name__ == '__main__':
     try:
-        print("started")
+        # print("started")
         time.sleep(5)
 
         # test_i2c()

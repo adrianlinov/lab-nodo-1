@@ -35,28 +35,31 @@ class RelayActuator(Actuator):
             if GlobalSecurityRules.validate_actuator_security_rules(self.get_id()) == True:
                 if newState == True or newState == "ON" or newState == "on" or newState == "1" or newState == 1:
                     self.pin.value(0)
-                    print(f"{self.id}: ON")
+                    # print(f"{self.id}: ON")
                     return 1
                 elif newState == False or newState == "OFF" or newState == "off" or newState == "0" or newState == 0:
                     self.pin.value(1)
-                    print(f"{self.id}: OFF")
+                    # print(f"{self.id}: OFF")
                     return 0
                 else:
-                    print("Invalid state")
+                    pass
+                    # print("Invalid state")
             else:
+                pass
                 # informar que no se cumplen las reglas de seguridad para activar el actuador
-                print("Security rules not validated")
+                # print("Security rules not validated")
         else:
             if newState == True or newState == "ON" or newState == "on" or newState == "1" or newState == 1:
                 self.pin.value(0)
-                print(f"{self.id}: ON")
+                # print(f"{self.id}: ON")
                 return 1
             elif newState == False or newState == "OFF" or newState == "off" or newState == "0" or newState == 0:
                 self.pin.value(1)
-                print(f"{self.id}: OFF")
+                # print(f"{self.id}: OFF")
                 return 0
             else:
-                print("Invalid state")
+                pass
+                # print("Invalid state")
 
         
     def set_state_until(self, start_callback, callback, value, newState, timeout=120):        
@@ -78,10 +81,10 @@ class RelayActuator(Actuator):
                     time.sleep(0.5)
                 self.pin.value(previous_value)
             else:
-                raise print("Invalid state")
+                raise # print("Invalid state")
         else:
             # informar que no se cumplen las reglas de seguridad para activar el actuador
-            raise print("Security rules not validated")
+            raise # print("Security rules not validated")
         
     def set_state_flowmetter(self, litters, validate_rule=True):
         litters = litters + self._get_compensation()
@@ -100,14 +103,14 @@ class RelayActuator(Actuator):
             caudal = (pulsos_por_segundo / (7.5 * 60))
             litros_en_medida_de_tiempo = caudal * (time_elapsed_bucle / 1000)
             litros_dispensados += litros_en_medida_de_tiempo
-            print(str(litros_en_medida_de_tiempo) + " - " + str(litros_dispensados))
+            # print(str(litros_en_medida_de_tiempo) + " - " + str(litros_dispensados))
             if litros_dispensados == 0 or litros_dispensados == litros_dispensados_prev:
                 contador+=1
             litros_dispensados_prev = litros_dispensados
             # if round(litros_en_medida_de_tiempo,3) >= 0.016:
             #     break       
         self.pin.value(1)
-        return litros_dispensados
+        return litros_dispensados - self._get_compensation()
 
 
     def read(self):

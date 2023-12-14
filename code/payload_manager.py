@@ -40,7 +40,7 @@ def start():
     #             constants.node_id = lines[0]
     #             constants.node_id_prev = lines[0]
     #             Node.registered_by_gateway = True
-    #             print("USANDO ID PREVIO")
+    #             # print("USANDO ID PREVIO")
     #         os.remove("/prev_id.txt")
     # except:
     #     pass
@@ -48,9 +48,10 @@ def start():
         if os.stat("/data.txt")[6] > 0:
             lines = open("/data.txt").readlines()
             if len(lines) > 0:
-                print("HAY DATA PARA MANDAR")
+                # print("HAY DATA PARA MANDAR")
+                pass
             for line in lines:
-                print(line)
+                # print(line)
                 try:
                     payload = Payload(str(line).replace("\n", ""))
                     if payload.action in ["read","read_res","set_state","set_state_res"]:
@@ -139,7 +140,7 @@ def payload_waiting_ack1_loop():
                 payload.tx_payload_send_count += 1
                 if payload.tx_payload_send_count > 3:
                     payload.priority = 1
-                if payload.tx_payload_send_count > 100:
+                if payload.tx_payload_send_count > 0:
                     # SAVE AND RESTART
                     pass
                 send_payload(payload)
@@ -219,16 +220,15 @@ def on_ack1_received(ack1_payload):
 
 def _dividir_diccionario(diccionario, num_divisiones):
     resultado = []
-    print("=====")
-    print(diccionario)
-    print("=====")
+    # print("=====")
+    # print(diccionario)
+    # print("=====")
 
     for i in range(num_divisiones):
         division = {}
         for clave_padre, valores_hijos in diccionario.items():
             division[clave_padre] = {}
             for clave_hijo, valor_hijo in valores_hijos.items():
-                print()
                 if int(clave_hijo) % num_divisiones == i:
                     division[clave_padre][clave_hijo] = valor_hijo
         resultado.append(division)
@@ -253,7 +253,7 @@ def rx_to_process_loop():
                     tx_waiting_ack1.append(response)
                 if response != None and cantidad_bytes_payload > 255:
                     cantidad_de_payloads_necesarios = math.ceil((cantidad_bytes_payload - 90) / (255 - 90))
-                    print("cantidad_de_payloads_necesarios: " + str(cantidad_de_payloads_necesarios))
+                    # print("cantidad_de_payloads_necesarios: " + str(cantidad_de_payloads_necesarios))
                     divisiones_s = _dividir_diccionario(response.data["s"]["SS1"], cantidad_de_payloads_necesarios)
                     divisiones_a = _dividir_diccionario(response.data["a"], cantidad_de_payloads_necesarios)
                     for payload_index in range(0, cantidad_de_payloads_necesarios):
@@ -352,7 +352,7 @@ def send_payload(payload):
     global rx_to_process
     global payload_to_send
     global lock_new_commands
-    if payload.tx_payload_send_count <= 100:
+    if payload.tx_payload_send_count <= 150:
         tx_waiting_ack1.append(payload)
     payload_to_send.append(payload)
 

@@ -13,7 +13,7 @@ for pin_num in BUTTON_PINS:
 def print_button_state():
     for i, button in enumerate(buttons):
         button_state = "ON" if button.value() == 0 else "OFF"
-        print("Button {} is {}".format(i + 1, button_state))
+        # print("Button {} is {}".format(i + 1, button_state))
 
 # Bucle principal
 while True:

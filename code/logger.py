@@ -6,7 +6,7 @@ class Logger:
     def __init__(self, log_file="logfile.txt", activado=True):
         self.log_file = log_file
         self.activado = activado
-        print("LOGGER INICIADO")
+        # print("LOGGER INICIADO")
         with open(self.log_file, "a") as f:
             f.write("==== INICIO ====\n")
             f.close()
@@ -20,7 +20,7 @@ class Logger:
                     timestamp[3], timestamp[4], timestamp[5]
                 )
                 log_entry = "{} [{}] {}\n".format(formatted_time, level, message)
-                print(message)
+                # print(message)
                 with open(self.log_file, "a") as f:
                     f.write(log_entry)
                     f.close()
@@ -37,7 +37,7 @@ class Logger:
                     timestamp[3], timestamp[4], timestamp[5]
                 )
                 log_entry = "{} [{}] {}\n".format(formatted_time, level, message)
-                print(message)
+                # print(message)
                 with open(self.log_file, "a") as f:
                     f.write(log_entry)
                     if isinstance(message, Exception):

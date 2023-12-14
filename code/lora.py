@@ -26,7 +26,7 @@ def reset_loop():
             time.sleep(1)
             # FALTA GUARDAR LOS DEMAS PAYLOADS [READ, READ_RES, SET_STATE, SET_STATE_RES]
             if start_time != None:
-                print("Tiempo Para Reinicio por envio: " + str(time.ticks_ms() - start_time))
+                # print("Tiempo Para Reinicio por envio: " + str(time.ticks_ms() - start_time))
                 if time.ticks_ms() - start_time > 10000:
                     if "register" in last_message:
                         utils.save_restart()
@@ -34,7 +34,7 @@ def reset_loop():
                         utils.save_restart(last_message)
 
             if listen_time != None:
-                print("Tiempo Para Reinicio por escucha: " + str(time.ticks_ms() - listen_time))
+                # print("Tiempo Para Reinicio por escucha: " + str(time.ticks_ms() - listen_time))
                 if time.ticks_ms() - listen_time > 10000:
                     if "register" in last_message:
                         utils.save_restart()
@@ -140,7 +140,7 @@ class LoRa:
                     listen_time = None
                     self.cb(payload)
             except Exception as e:
-                print(sys.print_exception(e))
+                # print(sys.print_exception(e))
                 logger.logException(e)
                 listen_time = None
                 self.cb(payload)

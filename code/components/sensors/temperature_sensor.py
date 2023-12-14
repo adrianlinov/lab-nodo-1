@@ -14,7 +14,6 @@ class TemperatureSensor(Sensor):
         for rom in self.roms:
             if ''.join('{:02x}'.format(byte) for byte in rom) == identifier:
                 self.rom = rom
-                print(f"sensor identificado: {identifier}")
                 break
         if self.rom == None:
             logger.log("No se encontro el sensor: " + str(identifier))

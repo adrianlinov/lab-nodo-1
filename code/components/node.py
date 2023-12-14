@@ -24,7 +24,7 @@ last_received_time = time.time()
 registered_by_gateway = False
 
 def init():
-    print("init executed sensor and actuators executed")
+    # print("init executed sensor and actuators executed")
     global sensors
     global actuators
 
@@ -43,7 +43,7 @@ def init():
         ae3 = RelayActuator("AE3", "3", 0, flowmeter_pin=34)    # AZUL
         ae4 = RelayActuator("AE4", "4", 13, flowmeter_pin=35)   # BLANCO
         ae5 = RelayActuator("AE5", "5", 21, flowmeter_pin=15)   # VERDE
-        ae6 = RelayActuator("AE6", "6", 17, flowmeter_pin=12)   # NARANJA
+        ae6 = RelayActuator("AE6", "6", 17, flowmeter_pin=32)   # NARANJA
         ae7 = RelayActuator("AE7", "7", 23,flowmeter_pin= 3)  # ROJO
         ae8 = RelayActuator("AE8", "8", 1, flowmeter_pin=10)  # NEGRO
         ae9 = RelayActuator("AE9", "9", 4, flowmeter_pin=25)   # TIRRA
@@ -212,7 +212,7 @@ def init():
         ae16 = RelayActuator("AE16", "6", 32, hidden=True) # NARANJA CHECK 
         ae17 = RelayActuator("AE17", "7", 23, hidden=True) # ROJO CUENTA SOLO CON RELAY
         ae18 = RelayActuator("AE18", "8", 15, hidden=True) # NEGRO
-        ae19 = RelayActuator("AE19", "9", 12, hidden=True) # TIRRA
+        ae19 = RelayActuator("AE19", "9", 3, hidden=True) # TIRRA
 
         ae10.set_state(0)
         ae11.set_state(0)
@@ -296,7 +296,7 @@ def get_actuator(actuator_id):
     for actuator in actuators:
         if actuator.get_id() == actuator_id:
             return actuator
-    print("ERROR Buscando actuador:" + str(actuator_id))
+    # print("ERROR Buscando actuador:" + str(actuator_id))
     time.sleep(5)
     return None
 
@@ -308,15 +308,15 @@ def get_sensor(sensor_id):
 
 def set_actuator_state(actuator_id, state, validate_rule=True):
     global actuators
-    print("Actuators: ", str(actuators))
+    # print("Actuators: ", str(actuators))
     for i in range(len(actuators)):
-        print(actuators[i].get_id() + "==" + actuator_id)
+        # print(actuators[i].get_id() + "==" + actuator_id)
         if actuators[i].get_id() == actuator_id:
             if state not in ["ON", "on", "1", 1, "OFF", "off", "0", 0, True, False, "True", "False", "TRUE", "FALSE"]:
-                print(f"ACTUATOR: {actuator_id}: " + str(state))
+                # print(f"ACTUATOR: {actuator_id}: " + str(state))
                 return round(float(actuators[i].set_state_flowmetter(state, False)),3)
             else:
-                print(f"ACTUATOR: {actuator_id}: " + str(state))
+                # print(f"ACTUATOR: {actuator_id}: " + str(state))
                 return actuators[i].set_state(state, False)
     return None
 

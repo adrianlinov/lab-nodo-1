@@ -152,7 +152,7 @@ class SX127x:
         start = time.ticks_ms()
         while (self.readRegister(REG_IRQ_FLAGS) & IRQ_TX_DONE_MASK) == 0:
             if (time.ticks_ms() - start > 4000):
-                print("Timeout LoRa Exit")
+                # print("Timeout LoRa Exit")
                 break
         start = None
 
@@ -291,7 +291,7 @@ class SX127x:
 
     # def dumpRegisters(self):
         # for i in range(128):
-            # print("0x{0:02x}: {1:02x}".format(i, self.readRegister(i)))
+            # # print("0x{0:02x}: {1:02x}".format(i, self.readRegister(i)))
 
 
     def implicitHeaderMode(self, implicitHeaderMode = False):
@@ -359,7 +359,7 @@ class SX127x:
 #
 #        if self._onReceive:
 #            payload = self.read_payload()
-#            print(payload)
+#            # print(payload)
 #            self.aquire_lock(False)     # unlock when done reading
 #
 #            self._onReceive(self, payload)
