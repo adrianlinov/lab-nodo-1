@@ -49,6 +49,10 @@ class Sampler(Sensor):
             "STW10" : {},
         }
         for tank_number in range(1,10):
+            temp = []
+            o2 = []
+            ph = []
+            cond = []
             const = 10
             # const = 1
             index = tank_number-1
@@ -58,34 +62,46 @@ class Sampler(Sensor):
             # Limpia el agua de la manguera
             self.tank_valves[index].set_state(True)
             self.release_valve.set_state(True)
-            time.sleep(3 * const)
-            # Llena el sistema de agua
+            time.sleep(10 * const)
+            # Llena el sistema de agua 1 vez
             self.release_valve.set_state(False)
-            time.sleep(9 * const)
-            try:
-                o2 = self.oxygen_sensor.read() 
-            except Exception as e:
-                logger.logException(e) 
-                o2 = None
-            try:
-                ph = self.ph_sensor.read()
-            except Exception as e:
-                logger.logException(e) 
-                ph = None
-            try:
-                cond = self.conductivity_sensor.read()
-            except Exception as e:
-                logger.logException(e) 
-                cond = None
-            try:
-                temp = self.temperature_sensor.read()
-            except Exception as e:
-                logger.logException(e) 
-                temp = None
+            time.sleep(10 * const)
+            self.tank_valves[index].set_state(False)
+            self.release_valve.set_state(True)
+            time.sleep(4 * const)
+            # Llena el sistema de agua 2 vez
+            self.tank_valves[index].set_state(True)
+            self.release_valve.set_state(False)
+            time.sleep(18 * const)
+            for c in range(0,10):
+                try:
+                    temp.append(self.temperature_sensor.read())
+                except Exception as e:
+                    logger.logException(e) 
+                try:
+                    o2.append(self.oxygen_sensor.read())
+                except Exception as e:
+                    logger.logException(e) 
+                try:
+                    ph.append(self.ph_sensor.read(temperatureCompensation=temp))
+                except Exception as e:
+                    logger.logException(e) 
+                try:
+                    cond.append(self.conductivity_sensor.read(temperatureCompensation=temp))
+                except Exception as e:
+                    logger.logException(e) 
             time.sleep(1)
-            results["SO1"][f"{tank_number}"] = o2
-            results["SPH1"][f"{tank_number}"] = ph
-            results["SC1"][f"{tank_number}"] = cond
-            results["STW10"][f"{tank_number}"] = temp
+            if len(temp) == 0:
+                temp = [0]
+            if len(o2) == 0:
+                o2 = [0]
+            if len(ph) == 0:
+                ph = [0]
+            if len(cond) == 0:
+                cond = [0]
+            results["SO1"][f"{tank_number}"] = sum(o2)/len(o2)
+            results["SPH1"][f"{tank_number}"] = sum(ph)/len(ph)
+            results["SC1"][f"{tank_number}"] = sum(cond)/len(cond)
+            results["STW10"][f"{tank_number}"] = sum(temp)/len(temp)
             self.tank_valves[index].set_state(False)
         return results

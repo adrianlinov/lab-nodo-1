@@ -11,8 +11,18 @@ class I2CSensor(Sensor):
         self.device_address = address
         self.last_value = None
             
-    def read(self):
+    def read(self, temperatureCompensation=None):
         '''Lee el valor del sensor'''
+        if temperatureCompensation != None:
+            if temperatureCompensation > 0:
+                self.i2c.writeto(self.device_address, b"T,"+str(round(temperatureCompensation,2)))
+                time.sleep(1)
+                response = self.i2c.readfrom(self.device_address, 7)
+            else:
+                self.i2c.writeto(self.device_address, b"T,25")
+                time.sleep(1)
+                response = self.i2c.readfrom(self.device_address, 7)
+                
         self.i2c.writeto(self.device_address, b"R")
         time.sleep(1)
         response = self.i2c.readfrom(self.device_address, 7)
