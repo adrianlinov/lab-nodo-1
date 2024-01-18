@@ -96,15 +96,25 @@ def init():
 
         # Sensores de Temperatura de Agua
         stw1 = TemperatureSensor("STW1", "1", 16, "283dd45704a13c0f") # CAMBIADO CON STW5 
+        print("STW1")
         stw2 = TemperatureSensor("STW2", "2", 16, "28111a5704433ca0")
+        print("STW2")
         stw3 = TemperatureSensor("STW3", "3", 16, "28338b5704cc3c35")
+        print("STW3")
         stw4 = TemperatureSensor("STW4", "4", 16, "28ebc65704f13cf1")
+        print("STW4")
         stw5 = TemperatureSensor("STW5", "5", 16, "282d925704053cf4")
+        print("STW5")
         stw6 = TemperatureSensor("STW6", "6", 16, "286f1d76e0013cd6")
+        print("STW6")
         stw7 = TemperatureSensor("STW7", "7", 16, "28a2715704103cbd")
+        print("STW7")
         stw8 = TemperatureSensor("STW8", "8", 16, "28ea6657044a3cd4")
+        print("STW8")
         stw9 = TemperatureSensor("STW9", "9", 16, "2891e276e0013c7e") #28831676e0013cf2 EL COMENTADO ES DE STW9
+        print("STW9")
         sta1 = TemperatureSensor("STA1", None, 16, "288adf57047c3c2c")
+        print("STA1")
 
        
         
@@ -213,6 +223,8 @@ def init():
         ae17 = RelayActuator("AE17", "7", 23, hidden=True) # ROJO CUENTA SOLO CON RELAY
         ae18 = RelayActuator("AE18", "8", 15, hidden=True) # NEGRO
         ae19 = RelayActuator("AE19", "9", 3, hidden=True) # TIRRA
+        
+        ap1 = RelayActuator("AP1", "*", 0, hidden=True) # TIRRA
 
         ae10.set_state(0)
         ae11.set_state(0)
@@ -224,6 +236,7 @@ def init():
         ae17.set_state(0)
         ae18.set_state(0)
         ae19.set_state(0)
+        ap1.set_state(0)
 
         
         stw10 = TemperatureSensor("STW10", "*", 33, "28128579a2000352", hidden=True)
@@ -261,7 +274,8 @@ def init():
         so1,
         sph1,
         sc1,
-        stw10
+        stw10,
+        ap1
         )
 
         sensors.append(sampler)

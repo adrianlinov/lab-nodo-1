@@ -26,8 +26,8 @@ def test_i2c():
     while True:
         try:
             i2c = machine.SoftI2C(scl=machine.Pin(25), sda=machine.Pin(22), freq=100000)
-            inpu = input("Ingrese comando: ")
-            # inpu = "R"
+            # inpu = input("Ingrese comando: ")
+            inpu = "R"
             command = inpu.encode('utf-8')
             i2c.writeto(0x63, command)
             time.sleep(1)
